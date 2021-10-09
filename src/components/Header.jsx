@@ -12,7 +12,7 @@ const Header = () => {
             Pixell
           </h1>
         </Link>
-        <nav className="flex flex-row items-center space-x-6">
+        <nav className="flex flex-row items-center space-x-3 sm:space-x-6">
           <Link href="/">
             <a className="font-medium text-gray-800">Home</a>
           </Link>

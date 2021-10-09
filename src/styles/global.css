@@ -1,1 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+.polka-dot {
+  background-image: radial-gradient(white 7%, transparent 0),
+    radial-gradient(white 7%, transparent 0);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+main p {
+  @apply text-gray-800;
+}
+
+main h1,
+main h2,
+main h3,
+main h4 {
+  @apply text-gray-800 font-extrabold;
+}

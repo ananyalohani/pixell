@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="flex py-6 items-center justify-center border-t text-gray-800">
+    <footer className="flex py-6 items-center justify-center border-t text-gray-800 border-gray-300">
       <p>
         Made by{" "}
         <a href="https://lohani.dev" className="text-purple-500 font-semibold">

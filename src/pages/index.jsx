@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-import Head from "next/head";
 import Hero from "@/components/Hero";
 import Container from "@/components/Container";
 import Button from "@/components/Button";

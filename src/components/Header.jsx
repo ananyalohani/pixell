@@ -3,7 +3,7 @@ import Container from "./Container";
 import Button from "./Button";
 import Link from "next/link";
 
-function Header() {
+const Header = () => {
   return (
     <header className="py-6 border-b">
       <Container className="flex flex-row items-center justify-between">
@@ -27,6 +27,6 @@ function Header() {
       </Container>
     </header>
   );
-}
+};
 
 export default Header;

@@ -8,9 +8,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        pink: colors.fuchsia,
-        purple: colors.purple,
         gray: colors.blueGray,
+        pink: {
+          ...colors.fuchsia,
+          350: "#EC92FB",
+        },
+        purple: {
+          ...colors.purple,
+          350: "#CC9CFD",
+        },
       },
     },
     fontFamily: {

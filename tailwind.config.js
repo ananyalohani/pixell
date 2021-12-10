@@ -7,6 +7,18 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      height: {
+        104: "26rem",
+        112: "28rem",
+        120: "30rem",
+        128: "32rem",
+      },
+      width: {
+        104: "26rem",
+        112: "28rem",
+        120: "30rem",
+        128: "32rem",
+      },
       colors: {
         gray: colors.blueGray,
         pink: {

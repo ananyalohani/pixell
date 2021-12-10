@@ -69,7 +69,7 @@ const Designer = (props: Props) => {
           />
         </div>
       </div>
-      <div className="flex items-center justify-center w-full">
+      <div className="flex items-center justify-center">
         <div
           ref={gridRef}
           className={`border-gray-300 bg-white w-80 h-80 sm:w-112 sm:h-112 ${

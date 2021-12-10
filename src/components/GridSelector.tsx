@@ -8,15 +8,17 @@ interface Props {
 }
 
 const GridSelector = ({ gridSize, setGridSize }: Props) => {
+  const gridCols = GRID_SIZES.length;
+
   return (
     <div className="flex flex-col items-center max-w-3xl px-10 py-8 mx-auto my-6 space-y-8 bg-white rounded-lg drop-shadow-lg">
       <div className="w-full">
-        <h2 className="mb-3 text-xl font-semibold text-center">
+        <h2 className="mb-3 text-lg font-semibold text-center sm:text-xl">
           Select the Grid Size
         </h2>
         <div className="w-full h-px bg-gray-200" />
       </div>
-      <div className="flex flex-row justify-around w-full">
+      <div className={`grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-4`}>
         {GRID_SIZES.map((sz) => (
           <div
             key={sz}

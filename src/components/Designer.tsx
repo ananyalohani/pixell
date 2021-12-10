@@ -6,9 +6,8 @@ import {
   PhotographIcon,
   TrashIcon,
 } from "@heroicons/react/solid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SketchPicker } from "react-color";
-import { exportComponentAsJPEG } from "react-component-export-image";
 import Button from "./Button";
 
 interface Props {}
@@ -26,6 +25,18 @@ const Designer = (props: Props) => {
     gridRef,
   } = useGridContext();
   const [pickedColor, setPickedColor] = useState<string>("");
+  const [downloadImage, setDownloadImage] = useState<any>();
+
+  const setup = async () => {
+    const { exportComponentAsJPEG } = await import("react-component-export-image");
+    setDownloadImage(() => () => {
+      if (gridRef) exportComponentAsJPEG(gridRef);
+    });
+  };
+
+  useEffect(() => {
+    if (window) setup();
+  }, [window]);
 
   return (
     <div className="flex flex-row items-center w-full p-8 my-6 space-x-8 bg-white rounded-lg drop-shadow-lg">
@@ -84,7 +95,7 @@ const Designer = (props: Props) => {
             </Button>
             <Button
               className="flex flex-row items-center justify-center space-x-2"
-              onClick={() => exportComponentAsJPEG(gridRef)}
+              onClick={downloadImage}
             >
               <DownloadIcon className="w-6 h-6 text-white" />
               <p className="text-white">Download</p>

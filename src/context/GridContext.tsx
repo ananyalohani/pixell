@@ -1,5 +1,5 @@
 import { GridSize } from "@/types";
-import React, { useContext, useState, createContext, useEffect } from "react";
+import React, { useContext, useState, createContext, useEffect, useRef } from "react";
 
 // @ts-ignore
 const GridContext = createContext<GridContextProps>();
@@ -11,9 +11,13 @@ interface GridContextProps {
   setCreateView: React.Dispatch<React.SetStateAction<"grid-selector" | "design">>;
   selectedCell: [number, number];
   setSelectedCell: React.Dispatch<React.SetStateAction<[number, number]>>;
+  preview: boolean;
+  setPreview: React.Dispatch<React.SetStateAction<boolean>>;
   colorGrid: string[][];
   colorCell: (row: number, col: number, color: string) => void;
-  onGridSelected: () => void;
+  clearGrid: () => void;
+  onGridSizeSelected: () => void;
+  gridRef: React.MutableRefObject<any>;
 }
 
 const GridContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,8 +26,9 @@ const GridContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [colorGrid, setColorGrid] = useState<string[][]>([]);
   const [selectedCell, setSelectedCell] = useState<[number, number]>([0, 0]);
   const [preview, setPreview] = useState<boolean>(false);
+  const gridRef = useRef<any>();
 
-  const onGridSelected = () => {
+  const onGridSizeSelected = () => {
     if (!gridSize) return;
     setCreateView("design");
     initializeGrid();
@@ -48,6 +53,10 @@ const GridContextProvider = ({ children }: { children: React.ReactNode }) => {
     setColorGrid(gridArray);
   };
 
+  const clearGrid = () => {
+    initializeGrid();
+  };
+
   const ctxProps: GridContextProps = {
     gridSize,
     setGridSize,
@@ -55,9 +64,13 @@ const GridContextProvider = ({ children }: { children: React.ReactNode }) => {
     setCreateView,
     selectedCell,
     setSelectedCell,
+    preview,
+    setPreview,
     colorGrid,
+    clearGrid,
     colorCell,
-    onGridSelected,
+    onGridSizeSelected,
+    gridRef,
   };
 
   return <GridContext.Provider value={ctxProps}>{children}</GridContext.Provider>;

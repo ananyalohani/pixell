@@ -6,7 +6,7 @@ import Button from "./Button";
 interface Props {}
 
 const GridSelector = ({}: Props) => {
-  const { gridSize, setGridSize, onGridSelected } = useGridContext();
+  const { gridSize, setGridSize, onGridSizeSelected } = useGridContext();
 
   return (
     <div className="flex flex-col items-center max-w-3xl px-10 py-8 mx-auto my-6 space-y-8 bg-white rounded-lg drop-shadow-lg">
@@ -29,7 +29,7 @@ const GridSelector = ({}: Props) => {
           </div>
         ))}
       </div>
-      <Button onClick={onGridSelected}>Start Designing!</Button>
+      <Button onClick={onGridSizeSelected}>Start Designing!</Button>
     </div>
   );
 };

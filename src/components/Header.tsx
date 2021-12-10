@@ -8,7 +8,7 @@ const Header = () => {
     <header className="py-6 border-b">
       <Container className="flex flex-row items-center justify-between">
         <Link href="/">
-          <h1 className="text-3xl font-black text-transparent cursor-pointer bg-clip-text bg-gradient-to-br from-pink-350 to-purple-350">
+          <h1 className="text-3xl font-black text-transparent cursor-pointer bg-clip-text bg-gradient-to-br from-pink-400 to-purple-400">
             Pixell
           </h1>
         </Link>

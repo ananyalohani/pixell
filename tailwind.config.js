@@ -23,7 +23,7 @@ module.exports = {
       sans: ["Inter", "ui-sans-serif", "system-ui"],
       body: ["Inter", "ui-sans-serif", "system-ui"],
       display: ["Inter", "ui-sans-serif", "system-ui"],
-      code: ["Fira Code", "monospace"],
+      code: ["Roboto Mono", "monospace"],
     },
   },
   variants: {

@@ -49,7 +49,21 @@ const Designer = (props: Props) => {
     anchor.click();
   };
 
-  // canvasRef.current?.toBlob((blob) => blob?.stream())
+  const mintNft = async () => {
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      if (!canvasRef.current) return;
+      canvasRef.current.toBlob((blob) => {
+        if (!blob) return reject();
+        resolve(blob);
+      });
+    });
+    if (blob) {
+      await fetch("/api/pinata", {
+        method: "POST",
+        body: blob,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-row flex-wrap items-center justify-center w-full gap-8 p-8 my-6 bg-white rounded-lg drop-shadow-lg">
@@ -118,7 +132,10 @@ const Designer = (props: Props) => {
               <DownloadIcon className="w-6 h-6 text-white" />
               <p className="text-white">Download</p>
             </Button>
-            <Button className={`flex flex-row items-center justify-center space-x-2`}>
+            <Button
+              className={`flex flex-row items-center justify-center space-x-2`}
+              onClick={mintNft}
+            >
               <CashIcon className="w-6 h-6 text-white" />
               <p className="text-white">Mint NFT!</p>
             </Button>
@@ -134,7 +151,10 @@ const Designer = (props: Props) => {
             </Button>
             <Button
               className="flex flex-row items-center justify-center space-x-2"
-              onClick={clearGrid}
+              onClick={() => {
+                clearGrid();
+                renderCanvas();
+              }}
             >
               <TrashIcon className="w-6 h-6 text-white" />
               <p className="text-white">Clear Grid</p>

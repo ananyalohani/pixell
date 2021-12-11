@@ -1,4 +1,5 @@
 import { useGridContext } from "@/context/GridContext";
+import { fetcher } from "@/lib/api";
 import {
   CashIcon,
   DownloadIcon,
@@ -50,18 +51,10 @@ const Designer = (props: Props) => {
   };
 
   const mintNft = async () => {
-    const blob = await new Promise<Blob>((resolve, reject) => {
-      if (!canvasRef.current) return;
-      canvasRef.current.toBlob((blob) => {
-        if (!blob) return reject();
-        resolve(blob);
-      });
-    });
-    if (blob) {
-      await fetch("/api/pinata", {
-        method: "POST",
-        body: blob,
-      });
+    if (!canvasRef.current) return;
+    const dataUrl = canvasRef.current.toDataURL();
+    if (dataUrl) {
+      await fetcher("/api/pinata", "POST", { dataUrl });
     }
   };
 

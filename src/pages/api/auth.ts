@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
       res.status(200).json({
-        data: { newUser },
+        data: { user: newUser },
       });
       return;
 
@@ -38,11 +38,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           publicAddress: req.query.publicAddress as string,
         },
       });
-      res.status(200).json({ data: { authUser } });
+      res.status(200).json({ data: { user: authUser } });
       return;
 
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
+      return;
   }
 }

@@ -4,7 +4,9 @@
   "description": "Smart Contracts for Pixell",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "pnpx hardhat compile",
+    "deploy": "pnpx hardhat run scripts/deploy.ts --network ropsten"
   },
   "author": "",
   "license": "ISC",

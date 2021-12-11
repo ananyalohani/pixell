@@ -55,6 +55,8 @@ contract PixellNFT is ERC721URIStorage {
     require(msg.value == price, 'Incorrect value');
 
     address seller = ownerOf(_tokenId);
+    require(msg.sender != seller, 'You already own this token');
+
     _transfer(seller, msg.sender, _tokenId); // transfer ownership of token from seller to buyer
     tokenIdToPrice[_tokenId] = 0; // remove from sale
     payable(seller).transfer(msg.value); // transfer ETH to seller

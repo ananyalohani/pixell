@@ -1,12 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Button from "./Button";
 import Link from "next/link";
 import { MenuIcon } from "@heroicons/react/outline";
+import { useEthers, useEtherBalance } from "@usedapp/core";
+import { formatEther } from "@ethersproject/units";
+import { fetcher } from "@/lib/api";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const closeMobileMenu = () => setMobileMenu(false);
+  const { activateBrowserWallet, account } = useEthers();
+  const etherBalance = useEtherBalance(account);
+
+  useEffect(() => {
+    handleAuth(account).then((res) => console.log(res));
+  }, [account]);
+
+  const handleAuth = async (publicAddress: string | null | undefined) => {
+    const response = await fetcher("/api/auth", "POST", { publicAddress });
+    return response;
+  };
+
+  const handleConnectWallet = async () => {
+    try {
+      await activateBrowserWallet(undefined, true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -29,7 +51,22 @@ const Header = () => {
             <Link href="/create">
               <a className="font-medium text-gray-800">Create</a>
             </Link>
-            <Button>Connect Wallet</Button>
+            {account ? (
+              <div className="flex flex-row items-center space-x-1">
+                <img src="/ethereum.jpeg" className="w-auto h-10" />
+                <p className="text-lg font-semibold text-purple-600">
+                  {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3) + " ETH"}
+                </p>
+              </div>
+            ) : (
+              <Button
+                onClick={handleConnectWallet}
+                className="flex flex-row items-center space-x-2"
+              >
+                <img src="/metamask.png" className="w-auto h-8" />
+                <p>Connect Wallet</p>
+              </Button>
+            )}
           </nav>
 
           {/* Mobile menu button */}

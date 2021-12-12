@@ -11,15 +11,20 @@ datasource db {
 }
 
 model User {
-  id                String       @id @default(uuid())
-  publicAddress     String       @unique
-  nfts              NFT[]
+  id            String @id @default(uuid())
+  publicAddress String @unique
+  ownedNFTs     NFT[]  @relation("Owner")
+  createdNFTs   NFT[]  @relation("Creator")
 }
 
 model NFT {
-  id            String      @id @default(uuid())
-  uri           String
-  metadataUri   String
-  user          User        @relation(references: [id], fields: [userId])
-  userId        String
+  id          String  @id @default(uuid())
+  uri         String  @unique
+  metadataUri String  @unique
+  onSale      Boolean @default(false)
+  price       Int
+  owner       User    @relation("Owner", fields: [ownerId], references: [id])
+  ownerId     String
+  creator     User    @relation("Creator", fields: [creatorId], references: [id])
+  creatorId   String
 }

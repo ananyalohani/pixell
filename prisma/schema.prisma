@@ -13,11 +13,11 @@ datasource db {
 model User {
   id            String @id @default(uuid())
   publicAddress String @unique
-  ownedNFTs     NFT[]  @relation("Owner")
-  createdNFTs   NFT[]  @relation("Creator")
+  ownedNFTs     Nft[]  @relation("Owner")
+  createdNFTs   Nft[]  @relation("Creator")
 }
 
-model NFT {
+model Nft {
   id          String  @id @default(uuid())
   uri         String  @unique
   metadataUri String  @unique

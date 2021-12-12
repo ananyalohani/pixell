@@ -38,14 +38,6 @@ const Designer = (props: Props) => {
     anchor.click();
   };
 
-  // const mintNft = async () => {
-  //   if (!canvasRef.current) return;
-  //   const dataUrl = canvasRef.current.toDataURL();
-  //   if (dataUrl) {
-  //     await fetcher("/api/pinata", "POST", { dataUrl });
-  //   }
-  // };
-
   return (
     <div className="flex flex-row flex-wrap items-center justify-center w-full gap-8 p-8 my-6 bg-white rounded-lg drop-shadow-lg">
       <div className="">

@@ -4,14 +4,16 @@ interface ButtonProps {
   children?: React.ReactNode;
   className?: string;
   onClick?: (props: any) => any;
+  type?: "button" | "submit" | "reset";
 }
 
-const Button = ({ className, children, onClick }: ButtonProps) => {
+const Button = ({ className, children, onClick, type }: ButtonProps) => {
   return (
     <button
       className={`${className} bg-purple-400 text-white font-medium p-2 rounded cursor-pointer
       hover:filter hover:brightness-110 drop-shadow`}
       onClick={onClick}
+      type={type}
     >
       {children}
     </button>

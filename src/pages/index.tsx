@@ -12,14 +12,21 @@ export default function Home() {
   const wethContractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
   const contract = new Contract(wethContractAddress!, wethInterface);
   const { account } = useEthers();
-  const { state, send } = useContractFunction(contract, "mintNFT", { transactionName: "Unwrap" });
+  const { state: mintState, send: mintNFT } = useContractFunction(contract, "mintNFT", {
+    transactionName: "Unwrap",
+  });
+  const { state: allowBuyState, send: allowBuy } = useContractFunction(contract, "allowBuy", {
+    transactionName: "Unwrap",
+  });
 
   useEffect(() => {
-    console.log("state:", state);
-  }, [state]);
+    console.log("mintState:", mintState);
+    console.log("tokenId:", parseInt(mintState.receipt?.logs[0].topics[3].substring(2)!, 16));
+  }, [mintState]);
 
   const testMint = () => {
-    send(
+    // Tested !
+    mintNFT(
       account,
       "https://gateway.pinata.cloud/ipfs/QmUP2p8eNMocekUBGNTxrnGpQZrGY16WcJKHYm1ppet8DZ"
     )
@@ -29,6 +36,15 @@ export default function Home() {
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  const testAllowBuy = () => {
+    // Not tested
+    const tokenId = 2;
+    const price = 0.03;
+    allowBuy(2, 0.03).then((res) => {
+      console.log(allowBuyState);
+    });
   };
 
   return (

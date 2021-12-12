@@ -42,6 +42,7 @@ contract PixellNFT is ERC721URIStorage {
     external
   {
     // call this function to remove the NFT from the marketplace (after it is bought)
+    // need to pass the tokenId of the NFT in the buyer's wallet NOT SENDER
     require(msg.sender == ownerOf(_tokenId), 'Not owner of this token');
     tokenIdToPrice[_tokenId] = 0;
   }

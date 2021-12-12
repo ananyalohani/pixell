@@ -7,6 +7,7 @@ import {
   PhotographIcon,
   TrashIcon,
 } from "@heroicons/react/solid";
+import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { SketchPicker } from "react-color";
 import Button from "./Button";
@@ -23,24 +24,11 @@ const Designer = (props: Props) => {
     preview,
     setPreview,
     clearGrid,
+    renderCanvas,
     gridRef,
   } = useGridContext();
   const [pickedColor, setPickedColor] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const renderCanvas = () => {
-    const dimension = 448 / Number(gridSize);
-    const canvas = canvasRef!.current as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      colorGrid.forEach((row, i) => {
-        row.forEach((cell, j) => {
-          ctx.fillStyle = cell || "white";
-          ctx.fillRect(j * dimension, i * dimension, dimension, dimension);
-        });
-      });
-    }
-  };
 
   const downloadCanvas = () => {
     if (!canvasRef?.current) return;
@@ -50,13 +38,13 @@ const Designer = (props: Props) => {
     anchor.click();
   };
 
-  const mintNft = async () => {
-    if (!canvasRef.current) return;
-    const dataUrl = canvasRef.current.toDataURL();
-    if (dataUrl) {
-      await fetcher("/api/pinata", "POST", { dataUrl });
-    }
-  };
+  // const mintNft = async () => {
+  //   if (!canvasRef.current) return;
+  //   const dataUrl = canvasRef.current.toDataURL();
+  //   if (dataUrl) {
+  //     await fetcher("/api/pinata", "POST", { dataUrl });
+  //   }
+  // };
 
   return (
     <div className="flex flex-row flex-wrap items-center justify-center w-full gap-8 p-8 my-6 bg-white rounded-lg drop-shadow-lg">
@@ -71,7 +59,7 @@ const Designer = (props: Props) => {
             onChange={(color: any) => {
               setPickedColor(color.hex);
               colorCell(selectedCell[0], selectedCell[1], color.hex);
-              renderCanvas();
+              renderCanvas(canvasRef);
             }}
           />
         </div>
@@ -97,7 +85,7 @@ const Designer = (props: Props) => {
                   onClick={() => {
                     setSelectedCell([i, j]);
                     colorCell(i, j, pickedColor!);
-                    renderCanvas();
+                    renderCanvas(canvasRef);
                   }}
                 ></div>
               );
@@ -125,13 +113,12 @@ const Designer = (props: Props) => {
               <DownloadIcon className="w-6 h-6 text-white" />
               <p className="text-white">Download</p>
             </Button>
-            <Button
-              className={`flex flex-row items-center justify-center space-x-2`}
-              onClick={mintNft}
-            >
-              <CashIcon className="w-6 h-6 text-white" />
-              <p className="text-white">Mint NFT!</p>
-            </Button>
+            <Link href="/mint" passHref>
+              <Button className={`flex flex-row items-center justify-center space-x-2`}>
+                <CashIcon className="w-6 h-6 text-white" />
+                <p className="text-white">Mint NFT!</p>
+              </Button>
+            </Link>
           </>
         ) : (
           <>
@@ -146,7 +133,7 @@ const Designer = (props: Props) => {
               className="flex flex-row items-center justify-center space-x-2"
               onClick={() => {
                 clearGrid();
-                renderCanvas();
+                renderCanvas(canvasRef);
               }}
             >
               <TrashIcon className="w-6 h-6 text-white" />

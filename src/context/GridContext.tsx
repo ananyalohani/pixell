@@ -17,6 +17,7 @@ interface GridContextProps {
   colorCell: (row: number, col: number, color: string) => void;
   clearGrid: () => void;
   onGridSizeSelected: () => void;
+  renderCanvas: (canvasRef: React.RefObject<HTMLCanvasElement>) => void;
   gridRef: React.MutableRefObject<any>;
 }
 
@@ -57,6 +58,20 @@ const GridContextProvider = ({ children }: { children: React.ReactNode }) => {
     initializeGrid();
   };
 
+  const renderCanvas = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
+    const dimension = 448 / Number(gridSize);
+    const canvas = canvasRef!.current as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      colorGrid.forEach((row, i) => {
+        row.forEach((cell, j) => {
+          ctx.fillStyle = cell || "white";
+          ctx.fillRect(j * dimension, i * dimension, dimension, dimension);
+        });
+      });
+    }
+  };
+
   const ctxProps: GridContextProps = {
     gridSize,
     setGridSize,
@@ -70,6 +85,7 @@ const GridContextProvider = ({ children }: { children: React.ReactNode }) => {
     clearGrid,
     colorCell,
     onGridSizeSelected,
+    renderCanvas,
     gridRef,
   };
 

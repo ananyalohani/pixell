@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@ethersproject/contracts': ^5.5.0
   '@ethersproject/units': ^5.5.0
   '@heroicons/react': ^1.0.5
   '@pinata/sdk': ^1.1.23
@@ -25,6 +26,7 @@ specifiers:
   typescript: ^4.5.3
 
 dependencies:
+  '@ethersproject/contracts': 5.5.0
   '@ethersproject/units': 5.5.0
   '@heroicons/react': 1.0.5_react@17.0.2
   '@pinata/sdk': 1.1.23

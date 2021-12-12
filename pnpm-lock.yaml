@@ -9,7 +9,6 @@ specifiers:
   '@types/react-color': ^3.0.6
   '@usedapp/core': ^0.7.0
   autoprefixer: ^10.2.6
-  axios: ^0.24.0
   dotenv: ^10.0.0
   ethers: ^5.5.2
   form-data: ^4.0.0
@@ -30,7 +29,6 @@ dependencies:
   '@pinata/sdk': 1.1.23
   '@prisma/client': 3.6.0_prisma@3.6.0
   '@usedapp/core': 0.7.0_react@17.0.2
-  axios: 0.24.0
   ethers: 5.5.2
   form-data: 4.0.0
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
@@ -922,14 +920,6 @@ packages:
 
   /axios/0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
-    dependencies:
-      follow-redirects: 1.14.6
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /axios/0.24.0:
-    resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
       follow-redirects: 1.14.6
     transitivePeerDependencies:

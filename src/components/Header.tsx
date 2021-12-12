@@ -52,8 +52,8 @@ const Header = () => {
               <a className="font-medium text-gray-800">Create</a>
             </Link>
             {account ? (
-              <div className="flex flex-row items-center space-x-1">
-                <img src="/ethereum.jpeg" className="w-auto h-10" />
+              <div className="flex flex-row items-center space-x-2">
+                <img src="/ethereum.webp" className="w-auto h-8" />
                 <p className="text-lg font-semibold text-purple-600">
                   {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3) + " ETH"}
                 </p>

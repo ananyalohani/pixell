@@ -23,7 +23,7 @@ model Nft {
   createdAt       DateTime @default(now())
   metadataUri     String   @unique
   onSale          Boolean  @default(false)
-  price           Int
+  price           Decimal
   owner           User     @relation("Owner", fields: [ownerId], references: [id])
   ownerId         String
   creator         User     @relation("Creator", fields: [creatorId], references: [id])

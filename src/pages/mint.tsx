@@ -38,10 +38,15 @@ export default function Mint({}: Props): ReactElement {
     if (canvasRef?.current) renderCanvas(canvasRef);
   }, [canvasRef]);
 
+  useEffect(() => {
+    console.log({ mintState });
+  }, [mintState]);
+
   const mintStages = [
     "Uploading your NFT and its metadata",
     "Adding the NFT to the blockchain",
-    "Enable the token to be bought",
+    "Updating token ID",
+    "Enabling the token to be bought",
   ];
 
   const handleMint = async (values: NftDetails) => {
@@ -63,8 +68,19 @@ export default function Mint({}: Props): ReactElement {
 
     // Sign the contract using the user's wallet to mint the NFT
     // and it to the blockchain
-    await mintNft(account, nft.metadataUri, nft.tokenId);
-    setMintStage(2);
+    let tokenId: number;
+    try {
+      await mintNft(nft.metadataUri);
+      if (mintState.status === "Success") {
+        tokenId = parseInt(mintState.receipt!.logs[0].topics[3].substring(2)!, 16);
+        setMintStage(2);
+      }
+    } catch (err) {
+      return;
+    }
+
+    // Set token ID to database entry
+    // await
 
     // Sign the contract to allow buying the NFT at the specified price
     await allowBuy(nft.tokenId, values.price);
@@ -135,11 +151,11 @@ export default function Mint({}: Props): ReactElement {
         <h2 className="text-2xl">Minting...</h2>
         <p className="text-sm leading-relaxed text-gray-600">Your NFT is being minted!</p>
       </div>
-      <div>
+      <div className="space-y-5">
         {mintStages.map((label, step) => {
-          if (mintStage < step) {
+          if (mintStage > step) {
             return (
-              <div>
+              <div key={step} className="flex items-center gap-2">
                 <CheckCircleIcon className="w-6 h-6 text-green-300" />
                 <span className="leading-relaxed text-green-700">{label}</span>
               </div>
@@ -148,17 +164,17 @@ export default function Mint({}: Props): ReactElement {
 
           if (mintStage === step) {
             return (
-              <div>
+              <div key={step} className="flex items-center gap-2">
                 <Spinner className="w-5 h-5 text-gray-400" />
-                <span className="leading-relaxed text-gray-700">{label}</span>
+                <span className="leading-relaxed text-gray-700">{label}...</span>
               </div>
             );
           }
 
           return (
-            <div>
+            <div key={step} className="flex items-center gap-2">
               <Spinner className="w-5 h-5 text-gray-100" />
-              <span className="leading-relaxed text-gray-400">{label}</span>
+              <span className="leading-relaxed text-gray-400">{label}...</span>
             </div>
           );
         })}
@@ -169,9 +185,8 @@ export default function Mint({}: Props): ReactElement {
   return (
     <section className="flex-1 w-full bg-gradient-to-tr to-purple-400 from-pink-400">
       <Container className="py-8">
-        <CheckCircleIcon className="w-6 h-6 text-green-300" />
         <h1 className="text-2xl text-center text-white sm:text-3xl">Mint Your NFT!</h1>
-        <div className="flex items-center max-w-4xl gap-10 p-0 mx-auto my-6 bg-white rounded-lg drop-shadow-lg">
+        <div className="flex items-center max-w-4xl p-0 mx-auto my-6 bg-white rounded-lg drop-shadow-lg">
           <div className="flex-1 py-10 pl-10 space-y-4">
             {minting ? <Minting /> : <DetailsForm />}
           </div>

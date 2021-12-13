@@ -100,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Create a long random number
-    const tokenId = Math.floor(Math.random() * Math.pow(2, 52));
+    const tokenId = Date.now();
 
     // Create an entry in the DB for this NFT
     try {

@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             creator: true,
           },
         });
-        console.log(nfts);
         res.status(200).json({ data: { nfts } });
       } catch (err) {
         res.status(500).json({ error: "Internal Server Error" });

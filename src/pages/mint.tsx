@@ -2,18 +2,19 @@ import Button from "@/components/Button";
 import Container from "@/components/Container";
 import { useGridContext } from "@/context/GridContext";
 import { fetcher } from "@/lib/api";
+import { Spinner } from "@chakra-ui/spinner";
+import { Contract } from "@ethersproject/contracts";
+import { parseEther } from "@ethersproject/units";
+import { CheckCircleIcon } from "@heroicons/react/solid";
 import { Nft } from "@prisma/client";
 import { useContractFunction, useEthers } from "@usedapp/core";
+import { utils } from "ethers";
 import { Formik } from "formik";
 import Link from "next/link";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
-import { utils } from "ethers";
-import { Contract } from "@ethersproject/contracts";
-import pixellContract from "../../hardhat/artifacts/contracts/NFT.sol/PixellNFT.json";
-import { CheckCircleIcon } from "@heroicons/react/solid";
-import { Spinner } from "@chakra-ui/spinner";
-import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
+import pixellContract from "../../hardhat/artifacts/contracts/NFT.sol/PixellNFT.json";
 
 interface Props {}
 
@@ -62,6 +63,9 @@ export default function Mint({}: Props): ReactElement {
     if (!canvasRef.current) return;
     setMintStage(0);
 
+    // Change the values.price string to number
+    values.price = Number(values.price);
+
     // Get the token ID, image and metadata hash
     const dataUrl = canvasRef.current.toDataURL();
     const { data: nft, error } = await fetcher<Nft>("/api/mint", "POST", {
@@ -78,7 +82,11 @@ export default function Mint({}: Props): ReactElement {
 
     // Fetching the IPFS image file from CF's gateway so that CF can cache
     // it before a user reaches the marketplace and finds it empty :(
-    fetch(`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`);
+    try {
+      fetch(`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`, {
+        mode: "no-cors",
+      });
+    } catch (err) {}
 
     // Sign the contract using the user's wallet to mint the NFT
     // and it to the blockchain
@@ -96,8 +104,13 @@ export default function Mint({}: Props): ReactElement {
     }
 
     // Sign the contract to allow buying the NFT at the specified price
-    await allowBuy(tokenRef.current!, values.price);
-    setMintStage(3);
+    try {
+      await allowBuy(tokenRef.current!, parseEther(values.price.toString()));
+      setMintStage(3);
+    } catch (err) {
+      console.error(err);
+      return;
+    }
 
     // Update database entry
     await fetcher(`/api/nfts/${nft.id}`, "PATCH", {
@@ -136,8 +149,8 @@ export default function Mint({}: Props): ReactElement {
               <input
                 onChange={handleChange}
                 name="price"
-                type="number"
-                min="0"
+                pattern="^\d*(\.\d{0,4})?$"
+                min="0.0001"
                 className="w-full p-2 text-gray-700 bg-gray-100 border border-gray-200 rounded"
                 required
                 value={values.price}

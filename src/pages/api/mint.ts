@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma";
 import FormData from "form-data";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
-import { Nft } from ".pnpm/@prisma+client@3.6.0_prisma@3.6.0/node_modules/.prisma/client";
 
 const { PINATA_API_KEY, PINATA_API_SECRET } = process.env as Record<string, any>;
 

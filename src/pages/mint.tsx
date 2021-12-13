@@ -76,6 +76,10 @@ export default function Mint({}: Props): ReactElement {
     setNft(nft);
     setMintStage(1);
 
+    // Fetching the IPFS image file from CF's gateway so that CF can cache
+    // it before a user reaches the marketplace and finds it empty :(
+    fetch(`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`);
+
     // Sign the contract using the user's wallet to mint the NFT
     // and it to the blockchain
     try {

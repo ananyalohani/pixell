@@ -14,7 +14,7 @@ const NftCard = ({ nft }: Props) => {
     <Link href={`/marketplace/${nft.id}`} passHref>
       <div className="flex flex-col transition-all bg-white border border-gray-300 rounded-lg cursor-pointer hover:-translate-y-1 hover:drop-shadow group">
         <div className="overflow-hidden border-b border-gray-200 rounded-t-lg">
-          <img src={nft.uri} />
+          <img src={`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`} />
         </div>
         <div className="w-full p-3 space-y-2">
           <div className="flex flex-row justify-between">

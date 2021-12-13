@@ -48,28 +48,27 @@ export default function NftPage({ nft }: Props): ReactElement {
       <Container className="py-16">
         <div className="flex flex-row space-x-16">
           <img src={nft.uri} className="self-start flex-1 max-w-md rounded-xl drop-shadow-lg" />
-          <div className="flex flex-col w-full space-y-4">
-            <h1 className="text-3xl">{nft.name}</h1>
-            <div className="flex flex-row items-center space-x-2">
-              <FaEthereum className="h-10 text-purple-500" />
-              <p className="text-2xl font-bold">{nft.price}</p>
-              <p className="text-gray-500 ">
-                (
-                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
-                  nft.usdPrice
-                )}
-                )
-              </p>
+          <div className="flex flex-col w-full space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-3xl">{nft.name}</h1>
+              <div className="flex flex-row items-center space-x-2">
+                <FaEthereum className="h-10 text-purple-500" />
+                <p className="text-2xl font-bold">{nft.price}</p>
+                <p className="text-gray-500 ">
+                  (
+                  {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+                    nft.usdPrice
+                  )}
+                  )
+                </p>
+              </div>
+              <p className="text-sm italic text-gray-800">{nft.description}</p>
             </div>
-            <div className="flex flex-col space-y-1 text-sm text-gray-800">
-              <h2 className="text-lg font-semibold">Description</h2>
-              <div className="">{nft.description}</div>
-            </div>
-            <div className="flex flex-col space-y-1 text-sm text-gray-800">
+            <div className="flex flex-col space-y-4 text-sm text-gray-800">
               <h2 className="text-lg font-semibold">Details</h2>
-              <Table size="sm">
+              <Table size="sm" className="border-collapse">
                 <Tr>
-                  <Th>Creator</Th>
+                  <Th className="py-4">Creator</Th>
                   <Td className="flex flex-row items-center space-x-2">
                     <code
                       className="address"

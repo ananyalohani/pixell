@@ -54,7 +54,7 @@ export default function NftPage({ nft }: Props): ReactElement {
               <p className="text-2xl font-bold">{nft.price}</p>
               <p className="text-gray-500 ">
                 (
-                {new Intl.NumberFormat("en-IN", { style: "currency", currency: "USD" }).format(
+                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
                   nft.usdPrice
                 )}
                 )

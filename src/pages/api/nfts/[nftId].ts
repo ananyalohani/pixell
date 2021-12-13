@@ -15,14 +15,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         });
         if (!nft) res.status(404).json({ error: "Not Found" });
-        res.status(200).json({ data: { nft } });
+        return res.status(200).json({ data: { nft } });
       } catch (err) {
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
       }
-      return;
+
+    case "PATCH":
+      try {
+        const nft = await prisma.nft.update({
+          where: { id: req.query.nftId as string },
+          data: req.body,
+        });
+        return res.json({ data: nft });
+      } catch (err) {
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
 
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["GET", "PATCH"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
       return;
   }

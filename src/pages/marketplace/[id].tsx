@@ -1,24 +1,19 @@
-import Container from "@/components/Container";
-import React, { ReactElement, useState } from "react";
-import { GetServerSideProps } from "next";
-import { fetcher } from "@/lib/api";
-import { Nft, User } from "@prisma/client";
-import {
-  ClipboardCopyIcon,
-  ClipboardIcon,
-  DuplicateIcon,
-  ExternalLinkIcon,
-} from "@heroicons/react/solid";
-import { FaEthereum } from "react-icons/fa";
 import Button from "@/components/Button";
-import { useToast, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Tooltip } from "@chakra-ui/react";
+import Container from "@/components/Container";
+import { fetcher } from "@/lib/api";
+import { Table, Td, Th, Tooltip, Tr, useToast } from "@chakra-ui/react";
+import { ClipboardCopyIcon, ExternalLinkIcon } from "@heroicons/react/solid";
+import { Nft, User } from "@prisma/client";
+import { GetServerSideProps } from "next";
+import React, { ReactElement } from "react";
+import { FaEthereum } from "react-icons/fa";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.params!;
   const { NEXT_PUBLIC_BASE_URL } = process.env;
   const { data, error } = await fetcher(`${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`);
 
-  if (error) {
+  if (error || !data?.nft.onSale) {
     return {
       notFound: true,
     };

@@ -13,7 +13,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      nfts: data?.nfts || null,
+      nfts:
+        data?.nfts
+          .filter((item: Nft) => item.onSale)
+          .reverse()
+          .slice(0, 5) || null,
     },
   };
 };
@@ -32,12 +36,9 @@ export default function Home({ nfts }: Props) {
         <section className="flex flex-col space-y-8">
           <h1 className="text-2xl">Latest Drops</h1>
           <div className="grid w-full grid-cols-5 gap-4">
-            {nfts
-              .reverse()
-              .slice(0, 5)
-              .map((nft) => (
-                <NftCard nft={nft} />
-              ))}
+            {nfts.map((nft) => (
+              <NftCard nft={nft} />
+            ))}
           </div>
           <Link passHref href="/marketplace">
             <Button className="self-end">Go to Marketplace</Button>

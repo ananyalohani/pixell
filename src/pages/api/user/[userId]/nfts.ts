@@ -8,8 +8,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const user = await prisma.user.findUnique({
           select: {
-            createdNFTs: true,
-            ownedNFTs: true,
+            createdNFTs: {
+              include: {
+                creator: true,
+              },
+            },
+            ownedNFTs: {
+              include: {
+                creator: true,
+              },
+            },
           },
           where: {
             id: req.query.userId as string,

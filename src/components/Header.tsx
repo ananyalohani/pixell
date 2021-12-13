@@ -86,6 +86,9 @@ const Header = () => {
             <Link href="/create">
               <a className="font-medium text-gray-800">Create</a>
             </Link>
+            <Link href={`/address/${account}/nfts`}>
+              <a className="font-medium text-gray-800">My NFTs</a>
+            </Link>
             {account ? (
               <div className="flex flex-row items-center space-x-2">
                 <img src="/ethereum.webp" className="w-auto h-8" />

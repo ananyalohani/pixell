@@ -12,8 +12,10 @@ interface Props {
 const NftCard = ({ nft }: Props) => {
   return (
     <Link href={`/marketplace/${nft.id}`} passHref>
-      <div className="flex flex-col transition-all bg-white border border-gray-200 rounded-lg cursor-pointer hover:-translate-y-1 hover:drop-shadow group">
-        <img src={nft.uri} className="border-b border-gray-200 rounded-t-lg" />
+      <div className="flex flex-col transition-all bg-white border border-gray-300 rounded-lg cursor-pointer hover:-translate-y-1 hover:drop-shadow group">
+        <div className="overflow-hidden border-b border-gray-200 rounded-t-lg">
+          <img src={nft.uri} />
+        </div>
         <div className="w-full p-3 space-y-2">
           <div className="flex flex-row justify-between">
             <h2 className="text-sm font-semibold">{nft.name}</h2>

@@ -30,6 +30,6 @@ model Nft {
   creatorId       String
   name            String
   description     String
-  tokenId         Int      @unique
+  tokenId         Int?     @unique
   contractAddress String
 }

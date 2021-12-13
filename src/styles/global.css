@@ -3,8 +3,7 @@
 
 .polka-grid {
   --dot-color: rgba(255, 255, 255, 0.521) 7%, transparent 0;
-  background-image: radial-gradient(var(--dot-color)),
-    radial-gradient(var(--dot-color));
+  background-image: radial-gradient(var(--dot-color)), radial-gradient(var(--dot-color));
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
 }
@@ -17,5 +16,9 @@ main h1,
 main h2,
 main h3,
 main h4 {
-  @apply text-gray-700 font-extrabold;
+  @apply font-extrabold text-gray-700;
+}
+
+.address {
+  @apply p-1 bg-gray-100 rounded cursor-pointer hover:underline;
 }

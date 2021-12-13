@@ -19,6 +19,14 @@ module.exports = {
         120: "30rem",
         128: "32rem",
       },
+      maxWidth: {
+        "2xs": "18rem",
+        "3xs": "16rem",
+        "4xs": "14rem",
+      },
+      fontSize: {
+        "2xs": ["0.65rem", { lineHeight: "1" }],
+      },
       colors: {
         gray: colors.blueGray,
         pink: {

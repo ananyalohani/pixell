@@ -15,7 +15,7 @@ contract PixellNFT is ERC721URIStorage {
 
   constructor() public ERC721("PixellNFT", "NFT") {}
 
-  function mintNFT(address recipient, string memory tokenURI)
+  function mintNFT(string memory tokenURI)
     public
     returns (uint256)
   {
@@ -23,7 +23,7 @@ contract PixellNFT is ERC721URIStorage {
     _tokenIds.increment();
 
     uint256 newTokenId = _tokenIds.current(); // new tokenId for the NFT to be minted
-    _mint(recipient, newTokenId);
+    _mint(msg.sender, newTokenId);
     _setTokenURI(newTokenId, tokenURI); // assigns a tokenId to the tokenURI
 
     return newTokenId; // returns the tokenId of the NFT

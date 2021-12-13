@@ -99,22 +99,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // Create a long random number
-    const tokenId = Date.now();
-
     // Create an entry in the DB for this NFT
     try {
       const nft = await prisma.nft.create({
         data: {
           uri: pinatify(imageHash),
           metadataUri: pinatify(metadataHash),
-          onSale: true,
+          onSale: false,
           price,
           ownerId: user.id,
           creatorId: user.id,
           description: metadata.description,
           name: metadata.name,
-          tokenId,
           contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string,
         },
       });

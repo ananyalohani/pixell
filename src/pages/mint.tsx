@@ -12,6 +12,8 @@ import { Contract } from "@ethersproject/contracts";
 import pixellContract from "../../hardhat/artifacts/contracts/NFT.sol/PixellNFT.json";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { Spinner } from "@chakra-ui/spinner";
+import { useWindowSize } from "react-use";
+import Confetti from "react-confetti";
 
 interface Props {}
 
@@ -21,11 +23,21 @@ interface NftDetails {
   description: string;
 }
 
+const MINT_STAGES = [
+  "Uploading your NFT and its metadata",
+  "Adding the NFT to the blockchain",
+  "Enabling the token to be bought",
+  "Updating token on database",
+];
+
 export default function Mint({}: Props): ReactElement {
-  const [minting, setMinting] = useState<boolean>(false);
-  const [mintStage, setMintStage] = useState<number>(0);
+  const [mintStage, setMintStage] = useState<number>(-1);
+  const [tokenId, setTokenId] = useState<number>(-1);
+  const [nft, setNft] = useState<Nft>();
+  const tokenRef = useRef<number>(tokenId);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { renderCanvas } = useGridContext();
+  const { width, height } = useWindowSize();
 
   const wethInterface = new utils.Interface(pixellContract.abi);
   const wethContractAdress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string;
@@ -34,24 +46,21 @@ export default function Mint({}: Props): ReactElement {
   const { state: allowBuyState, send: allowBuy } = useContractFunction(contract, "allowBuy");
   const { account } = useEthers();
 
+  tokenRef.current = tokenId;
+
   useEffect(() => {
     if (canvasRef?.current) renderCanvas(canvasRef);
   }, [canvasRef]);
 
   useEffect(() => {
-    console.log({ mintState });
+    if (mintState.status === "Success") {
+      setTokenId(parseInt(mintState.receipt!.logs[0].topics[3].substring(2)!, 16));
+    }
   }, [mintState]);
-
-  const mintStages = [
-    "Uploading your NFT and its metadata",
-    "Adding the NFT to the blockchain",
-    "Updating token ID",
-    "Enabling the token to be bought",
-  ];
 
   const handleMint = async (values: NftDetails) => {
     if (!canvasRef.current) return;
-    setMinting(true);
+    setMintStage(0);
 
     // Get the token ID, image and metadata hash
     const dataUrl = canvasRef.current.toDataURL();
@@ -64,27 +73,34 @@ export default function Mint({}: Props): ReactElement {
       console.error(error);
       return;
     }
+    setNft(nft);
     setMintStage(1);
 
     // Sign the contract using the user's wallet to mint the NFT
     // and it to the blockchain
-    let tokenId: number;
     try {
       await mintNft(nft.metadataUri);
-      if (mintState.status === "Success") {
-        tokenId = parseInt(mintState.receipt!.logs[0].topics[3].substring(2)!, 16);
-        setMintStage(2);
-      }
+      await new Promise<void>((resolve) => {
+        setInterval(() => {
+          if (tokenRef.current > 0) resolve();
+        });
+      });
+      setMintStage(2);
     } catch (err) {
+      console.error(err);
       return;
     }
 
-    // Set token ID to database entry
-    // await
-
     // Sign the contract to allow buying the NFT at the specified price
-    await allowBuy(nft.tokenId, values.price);
+    await allowBuy(tokenRef.current!, values.price);
     setMintStage(3);
+
+    // Update database entry
+    await fetcher(`/api/nfts/${nft.id}`, "PATCH", {
+      onSale: true,
+      tokenId: tokenRef.current!,
+    });
+    setMintStage(4);
   };
 
   const DetailsForm: React.FC = () => (
@@ -152,7 +168,7 @@ export default function Mint({}: Props): ReactElement {
         <p className="text-sm leading-relaxed text-gray-600">Your NFT is being minted!</p>
       </div>
       <div className="space-y-5">
-        {mintStages.map((label, step) => {
+        {MINT_STAGES.map((label, step) => {
           if (mintStage > step) {
             return (
               <div key={step} className="flex items-center gap-2">
@@ -161,7 +177,6 @@ export default function Mint({}: Props): ReactElement {
               </div>
             );
           }
-
           if (mintStage === step) {
             return (
               <div key={step} className="flex items-center gap-2">
@@ -170,7 +185,6 @@ export default function Mint({}: Props): ReactElement {
               </div>
             );
           }
-
           return (
             <div key={step} className="flex items-center gap-2">
               <Spinner className="w-5 h-5 text-gray-100" />
@@ -182,19 +196,55 @@ export default function Mint({}: Props): ReactElement {
     </>
   );
 
+  const Minted: React.FC = () => (
+    <>
+      <div className="space-y-2">
+        <h2 className="text-2xl">Minted! 🎉</h2>
+        <p className="text-sm leading-relaxed text-gray-600">Yayy! Your NFT has been minted.</p>
+      </div>
+      <div className="space-y-5">
+        {MINT_STAGES.map((label, step) => (
+          <div key={step} className="flex items-center gap-2">
+            <CheckCircleIcon className="w-6 h-6 text-green-300" />
+            <span className="leading-relaxed text-green-700">{label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-3 pt-5">
+        <Link href={`/marketplace/${nft!.id}`}>
+          <Button className="flex-1">View on Marketplace</Button>
+        </Link>
+        <a href={nft!.uri} target="_blank">
+          <Button className="flex-1">View on Pinata (IPFS)</Button>
+        </a>
+      </div>
+    </>
+  );
+
   return (
-    <section className="flex-1 w-full bg-gradient-to-tr to-purple-400 from-pink-400">
-      <Container className="py-8">
-        <h1 className="text-2xl text-center text-white sm:text-3xl">Mint Your NFT!</h1>
-        <div className="flex items-center max-w-4xl p-0 mx-auto my-6 bg-white rounded-lg drop-shadow-lg">
-          <div className="flex-1 py-10 pl-10 space-y-4">
-            {minting ? <Minting /> : <DetailsForm />}
+    <>
+      {mintStage === MINT_STAGES.length && (
+        <Confetti width={width} height={height} recycle={false} />
+      )}
+      <section className="flex-1 w-full bg-gradient-to-tr to-purple-400 from-pink-400">
+        <Container className="py-8">
+          <h1 className="text-2xl text-center text-white sm:text-3xl">Mint Your NFT!</h1>
+          <div className="flex items-center max-w-4xl p-0 mx-auto my-6 bg-white rounded-lg drop-shadow-lg">
+            <div className="flex-1 py-10 pl-10 space-y-4">
+              {mintStage === MINT_STAGES.length ? (
+                <Minted />
+              ) : mintStage >= 0 ? (
+                <Minting />
+              ) : (
+                <DetailsForm />
+              )}
+            </div>
+            <div className="overflow-auto transform scale-75 border border-gray-200 shadow-xl rounded-xl">
+              <canvas height="448" width="448" ref={canvasRef}></canvas>
+            </div>
           </div>
-          <div className="overflow-auto transform scale-75 border border-gray-200 shadow-xl rounded-xl">
-            <canvas height="448" width="448" ref={canvasRef}></canvas>
-          </div>
-        </div>
-      </Container>
-    </section>
+        </Container>
+      </section>
+    </>
   );
 }

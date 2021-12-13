@@ -1,32 +1,23 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract PixellNFT is ERC721URIStorage {
-  using Counters for Counters.Counter;
   event NFTBought(address _seller, address _buyer, uint256 _price);
-
   mapping (uint256 => uint256) public tokenIdToPrice;
-
-  // keep track of total NFTs minted and assign unique IDs
-  Counters.Counter private _tokenIds;
 
   constructor() public ERC721("PixellNFT", "NFT") {}
 
-  function mintNFT(address recipient, string memory tokenURI)
-    public
+  function mintNFT(address recipient, string memory tokenURI, uint256 tokenId)
+    external
     returns (uint256)
   {
     // call this function to mint a pixel art NFT
-    _tokenIds.increment();
+    _mint(recipient, tokenId);
+    _setTokenURI(tokenId, tokenURI); // assigns a tokenId to the tokenURI
 
-    uint256 newTokenId = _tokenIds.current(); // new tokenId for the NFT to be minted
-    _mint(recipient, newTokenId);
-    _setTokenURI(newTokenId, tokenURI); // assigns a tokenId to the tokenURI
-
-    return newTokenId; // returns the tokenId of the NFT
+    return tokenId; // returns the tokenId of the NFT
   }
 
   function allowBuy(uint256 _tokenId, uint256 _price)

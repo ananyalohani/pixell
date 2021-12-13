@@ -23,9 +23,10 @@ export const fetcher = async <T = any>(
 
   try {
     const res = await fetch(endpoint, { ...options });
-    const jsonReponse = (await res.json()) as ApiResponse<T>;
+    const jsonResponse = (await res.json()) as ApiResponse<T>;
     return {
-      data: jsonReponse.data,
+      data: jsonResponse.data,
+      error: jsonResponse.error,
     };
   } catch (err) {
     console.error(err);

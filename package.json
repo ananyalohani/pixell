@@ -27,7 +27,8 @@
     "react": "^17.0.2",
     "react-color": "^2.19.3",
     "react-component-export-image": "^1.0.6",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1"
   },
   "devDependencies": {
     "@types/react": "^17.0.37",

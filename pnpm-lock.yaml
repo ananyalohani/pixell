@@ -26,6 +26,7 @@ specifiers:
   react-color: ^2.19.3
   react-component-export-image: ^1.0.6
   react-dom: ^17.0.2
+  react-icons: ^4.3.1
   tailwindcss: ^2.2.4
   typescript: ^4.5.3
 
@@ -48,6 +49,7 @@ dependencies:
   react-color: 2.19.3_react@17.0.2
   react-component-export-image: 1.0.6
   react-dom: 17.0.2_react@17.0.2
+  react-icons: 4.3.1_react@17.0.2
 
 devDependencies:
   '@types/react': 17.0.37
@@ -2069,6 +2071,7 @@ packages:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+    requiresBuild: true
     optional: true
 
   /function-bind/1.1.1:

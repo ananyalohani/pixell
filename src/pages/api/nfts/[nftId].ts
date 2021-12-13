@@ -1,7 +1,10 @@
 import prisma from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   // get nft by its Id: /nfts/[nftId]
   switch (req.method) {
     case "GET":
@@ -9,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const nft = await prisma.nft.findUnique({
           include: {
             creator: true,
+            owner: true,
           },
           where: {
             id: req.query.nftId as string,

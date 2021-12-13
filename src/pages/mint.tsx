@@ -43,8 +43,14 @@ export default function Mint({}: Props): ReactElement {
   const wethInterface = new utils.Interface(pixellContract.abi);
   const wethContractAdress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string;
   const contract = new Contract(wethContractAdress, wethInterface);
-  const { state: mintState, send: mintNft } = useContractFunction(contract, "mintNFT");
-  const { state: allowBuyState, send: allowBuy } = useContractFunction(contract, "allowBuy");
+  const { state: mintState, send: mintNft } = useContractFunction(
+    contract,
+    "mintNFT"
+  );
+  const { state: allowBuyState, send: allowBuy } = useContractFunction(
+    contract,
+    "allowBuy"
+  );
   const { account } = useEthers();
 
   tokenRef.current = tokenId;
@@ -55,7 +61,9 @@ export default function Mint({}: Props): ReactElement {
 
   useEffect(() => {
     if (mintState.status === "Success") {
-      setTokenId(parseInt(mintState.receipt!.logs[0].topics[3].substring(2)!, 16));
+      setTokenId(
+        parseInt(mintState.receipt!.logs[0].topics[3].substring(2)!, 16)
+      );
     }
   }, [mintState]);
 
@@ -133,7 +141,10 @@ export default function Mint({}: Props): ReactElement {
         onSubmit={handleMint}
       >
         {({ values, handleSubmit, handleChange }) => (
-          <form onSubmit={handleSubmit} className="flex flex-col w-full max-w-sm space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col w-full max-w-sm space-y-4"
+          >
             <div className="flex flex-col space-y-1">
               <label className="font-semibold text-gray-700">Name</label>
               <input
@@ -182,7 +193,9 @@ export default function Mint({}: Props): ReactElement {
     <>
       <div className="space-y-2">
         <h2 className="text-2xl">Minting...</h2>
-        <p className="text-sm leading-relaxed text-gray-600">Your NFT is being minted!</p>
+        <p className="text-sm leading-relaxed text-gray-600">
+          Your NFT is being minted!
+        </p>
       </div>
       <div className="space-y-5">
         {MINT_STAGES.map((label, step) => {
@@ -198,7 +211,9 @@ export default function Mint({}: Props): ReactElement {
             return (
               <div key={step} className="flex items-center gap-2">
                 <Spinner className="w-5 h-5 text-gray-400" />
-                <span className="leading-relaxed text-gray-700">{label}...</span>
+                <span className="leading-relaxed text-gray-700">
+                  {label}...
+                </span>
               </div>
             );
           }
@@ -217,7 +232,9 @@ export default function Mint({}: Props): ReactElement {
     <>
       <div className="space-y-2">
         <h2 className="text-2xl">Minted! 🎉</h2>
-        <p className="text-sm leading-relaxed text-gray-600">Yayy! Your NFT has been minted.</p>
+        <p className="text-sm leading-relaxed text-gray-600">
+          Yayy! Your NFT has been minted.
+        </p>
       </div>
       <div className="space-y-5">
         {MINT_STAGES.map((label, step) => (
@@ -245,7 +262,9 @@ export default function Mint({}: Props): ReactElement {
       )}
       <section className="flex-1 w-full bg-gradient-to-tr to-purple-400 from-pink-400">
         <Container className="py-8">
-          <h1 className="text-2xl text-center text-white sm:text-3xl">Mint Your NFT!</h1>
+          <h1 className="text-2xl text-center text-white sm:text-3xl">
+            Mint Your NFT!
+          </h1>
           <div className="flex items-center max-w-4xl p-0 mx-auto my-6 bg-white rounded-lg drop-shadow-lg">
             <div className="flex-1 py-10 pl-10 space-y-4">
               {mintStage === MINT_STAGES.length ? (

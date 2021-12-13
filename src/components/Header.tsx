@@ -3,7 +3,7 @@ import Container from "./Container";
 import Button from "./Button";
 import Link from "next/link";
 import { MenuIcon } from "@heroicons/react/outline";
-import { useEthers, useEtherBalance } from "@usedapp/core";
+import { useEthers, useEtherBalance, ChainId } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 import { fetcher } from "@/lib/api";
 import {
@@ -20,53 +20,105 @@ import {
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const closeMobileMenu = () => setMobileMenu(false);
-  const { activateBrowserWallet, account } = useEthers();
+  const { activateBrowserWallet, account, chainId } = useEthers();
   const etherBalance = useEtherBalance(account);
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen: metamaskMissingOpen, onToggle: metamaskMissingToggle } =
+    useDisclosure();
+  const { isOpen: unsupportedNetworkOpen, onToggle: unsupportedNetworkToggle } =
+    useDisclosure();
 
   useEffect(() => {
-    handleAuth(account).then((res) => console.log(res));
+    handleAuth(account);
   }, [account]);
+
+  useEffect(() => {
+    if (
+      (chainId !== 3 && !unsupportedNetworkOpen) ||
+      (chainId === 3 && unsupportedNetworkOpen)
+    )
+      unsupportedNetworkToggle();
+  }, [chainId]);
 
   const handleAuth = async (publicAddress: string | null | undefined) => {
     const response = await fetcher("/api/auth", "POST", { publicAddress });
     return response;
   };
 
-  const handleConnectWallet = async () => {
+  const handleConnectWallet = () => {
     try {
-      await activateBrowserWallet(undefined, true);
+      activateBrowserWallet(undefined, true);
     } catch (err) {
       console.error(err);
-      onToggle();
+      metamaskMissingToggle();
     }
   };
 
+  const MetamaskMissingAlert: React.FC = () => (
+    <Slide
+      direction="top"
+      in={metamaskMissingOpen}
+      style={{ zIndex: 10, top: metamaskMissingOpen ? 20 : 0 }}
+    >
+      <Box width="100%">
+        <Alert status="error" width="container.sm" marginX="auto" rounded="md">
+          <AlertIcon />
+          <Box flex="1">
+            <AlertTitle>Metamask Not Found!</AlertTitle>
+            <AlertDescription display="block" fontSize={"sm"}>
+              Looks like you don't have the{" "}
+              <a
+                href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+                target="_blank"
+                rel="noopener"
+                className="font-medium underline"
+              >
+                Metamask Extension
+              </a>{" "}
+              installed. Please install it, log into your account and try again.
+            </AlertDescription>
+          </Box>
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={metamaskMissingToggle}
+          />
+        </Alert>
+      </Box>
+    </Slide>
+  );
+
+  const UnsupportedNetworkAlert: React.FC = () => (
+    <Slide
+      direction="top"
+      in={unsupportedNetworkOpen}
+      style={{ zIndex: 10, top: unsupportedNetworkOpen ? 20 : 0 }}
+    >
+      <Box width="100%">
+        <Alert status="error" width="container.sm" marginX="auto" rounded="md">
+          <AlertIcon />
+          <Box flex="1">
+            <AlertTitle>Unsupported Network!</AlertTitle>
+            <AlertDescription display="block" fontSize={"sm"}>
+              Look's like your account is not connected to the Ropsten Network.
+              Connect to Ropsten to create and purchase NFTs.
+            </AlertDescription>
+          </Box>
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={unsupportedNetworkToggle}
+          />
+        </Alert>
+      </Box>
+    </Slide>
+  );
+
   return (
     <>
-      <Slide direction="top" in={isOpen} style={{ zIndex: 10, top: isOpen ? 20 : 0 }}>
-        <Box width="100%">
-          <Alert status="error" width="container.sm" marginX="auto" rounded="md">
-            <AlertIcon />
-            <Box flex="1">
-              <AlertTitle>Metamask Not Found!</AlertTitle>
-              <AlertDescription display="block" fontSize={"sm"}>
-                Looks like you don't have the{" "}
-                <a
-                  href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
-                  target="_blank"
-                  rel="noopener"
-                  className="font-medium underline"
-                >
-                  Metamask Extension
-                </a>{" "}
-                installed. Please install it, log into your account and try again.
-              </AlertDescription>
-            </Box>
-            <CloseButton position="absolute" right="8px" top="8px" onClick={onToggle} />
-          </Alert>
-        </Box>
-      </Slide>
+      <MetamaskMissingAlert />
+      <UnsupportedNetworkAlert />
       <header className="py-6 border-b">
         <Container className="flex flex-row items-center justify-between">
           <Link href="/">
@@ -92,9 +144,15 @@ const Header = () => {
             {account ? (
               <div className="flex flex-row items-center space-x-2">
                 <img src="/ethereum.webp" className="w-auto h-8" />
-                <p className="text-lg font-semibold text-purple-600">
-                  {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3) + " ETH"}
-                </p>
+                <div className="flex flex-col -space-y-1">
+                  <p className="text-lg font-semibold text-purple-600">
+                    {etherBalance &&
+                      parseFloat(formatEther(etherBalance)).toFixed(3) + " ETH"}
+                  </p>
+                  <p className="text-xs tracking-wider uppercase">
+                    {ChainId[chainId!]}
+                  </p>
+                </div>
               </div>
             ) : (
               <Button

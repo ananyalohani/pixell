@@ -10,19 +10,19 @@ type NftWithUser = Nft & { creator: User };
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { publicAddress } = ctx.params!;
   const { NEXT_PUBLIC_BASE_URL } = process.env;
-  const { data: userData, error: userError } = await fetcher(
+  const { data: user, error: userError } = await fetcher(
     `${NEXT_PUBLIC_BASE_URL}/api/auth?publicAddress=${publicAddress}`
   );
   const { data: nftData, error: nftError } = await fetcher(
-    `${NEXT_PUBLIC_BASE_URL}/api/user/${userData.user.id}/nfts`
+    `${NEXT_PUBLIC_BASE_URL}/api/user/${user.id}/nfts`
   );
 
   console.error(userError || nftError);
-  console.log(nftData);
   const { createdNFTs, ownedNFTs } = nftData.user;
 
   const bought = ownedNFTs.filter(
-    (nft: NftWithUser) => !createdNFTs.find((createdNft: NftWithUser) => nft.id === createdNft.id)
+    (nft: NftWithUser) =>
+      !createdNFTs.find((createdNft: NftWithUser) => nft.id === createdNft.id)
   );
 
   return {

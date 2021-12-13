@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   switch (req.method) {
     case "POST":
       if (!req.body.publicAddress) {
@@ -38,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           publicAddress: req.query.publicAddress as string,
         },
       });
-      res.status(200).json({ data: { user: authUser } });
+      res.status(200).json({ data: authUser });
       return;
 
     default:

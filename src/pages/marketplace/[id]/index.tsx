@@ -5,13 +5,19 @@ import { Table, Td, Th, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import { ClipboardCopyIcon, ExternalLinkIcon } from "@heroicons/react/solid";
 import { Nft, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { FaEthereum } from "react-icons/fa";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEthers } from "@usedapp/core";
+import { Spinner } from "@chakra-ui/spinner";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.params!;
   const { NEXT_PUBLIC_BASE_URL } = process.env;
-  const { data, error } = await fetcher(`${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`);
+  const { data, error } = await fetcher(
+    `${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`
+  );
 
   if (error || !data?.nft.onSale) {
     return {
@@ -41,13 +47,32 @@ interface Props {
 }
 
 export default function NftPage({ nft }: Props): ReactElement {
+  const [owner, setOwner] = useState<User>();
   const toast = useToast();
+  const { query } = useRouter();
+  const { account } = useEthers();
+
+  useEffect(() => {
+    if (account) {
+      fetcher<User>(`/api/auth?publicAddress=${account}`)
+        .then(({ data, error }) => {
+          if (error || !data) throw new Error(error);
+          setOwner(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [account]);
 
   return (
     <section>
       <Container className="py-16">
         <div className="flex flex-row space-x-16">
-          <img src={nft.uri} className="self-start flex-1 max-w-md rounded-xl drop-shadow-lg" />
+          <img
+            src={nft.uri}
+            className="self-start flex-1 max-w-md rounded-xl drop-shadow-lg"
+          />
           <div className="flex flex-col w-full space-y-8">
             <div className="space-y-4">
               <h1 className="text-3xl">{nft.name}</h1>
@@ -56,9 +81,10 @@ export default function NftPage({ nft }: Props): ReactElement {
                 <p className="text-2xl font-bold">{nft.price}</p>
                 <p className="text-gray-500 ">
                   (
-                  {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
-                    nft.usdPrice
-                  )}
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format(nft.usdPrice)}
                   )
                 </p>
               </div>
@@ -73,10 +99,13 @@ export default function NftPage({ nft }: Props): ReactElement {
                     <code
                       className="address"
                       onClick={() => {
-                        window.navigator.clipboard.writeText(nft.creator.publicAddress);
+                        window.navigator.clipboard.writeText(
+                          nft.creator.publicAddress
+                        );
                         toast({
                           title: "Address Copied!",
-                          description: "The public address of the creator was copied to clipboard.",
+                          description:
+                            "The public address of the creator was copied to clipboard.",
                           status: "success",
                           duration: 3000,
                           isClosable: true,
@@ -107,7 +136,9 @@ export default function NftPage({ nft }: Props): ReactElement {
                 </Tr>
                 <Tr>
                   <Th>Token ID</Th>
-                  <Td className="flex flex-row items-center space-x-2">{nft.tokenId}</Td>
+                  <Td className="flex flex-row items-center space-x-2">
+                    {nft.tokenId}
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Created At</Th>
@@ -117,15 +148,27 @@ export default function NftPage({ nft }: Props): ReactElement {
                 </Tr>
                 <Tr>
                   <Th>Token Standard</Th>
-                  <Td className="flex flex-row items-center space-x-2">ERC-721 URI Storage</Td>
+                  <Td className="flex flex-row items-center space-x-2">
+                    ERC-721 URI Storage
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Network</Th>
-                  <Td className="flex flex-row items-center space-x-2">Ropsten</Td>
+                  <Td className="flex flex-row items-center space-x-2">
+                    Ropsten
+                  </Td>
                 </Tr>
               </Table>
             </div>
-            <Button>Buy</Button>
+            {!owner ? (
+              <Spinner />
+            ) : (
+              owner!.id !== nft.ownerId && (
+                <Link href={`/marketplace/${query.id}/buy`}>
+                  <Button>Buy</Button>
+                </Link>
+              )
+            )}
           </div>
         </div>
       </Container>

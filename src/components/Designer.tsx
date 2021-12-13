@@ -1,5 +1,5 @@
+import { useEffect } from "react";
 import { useGridContext } from "@/context/GridContext";
-import { fetcher } from "@/lib/api";
 import {
   CashIcon,
   DownloadIcon,
@@ -37,6 +37,11 @@ const Designer = (props: Props) => {
     anchor.href = canvasRef.current.toDataURL();
     anchor.click();
   };
+
+  useEffect(() => {
+    setPreview(false);
+    renderCanvas(canvasRef);
+  }, []);
 
   return (
     <div className="flex flex-row flex-wrap items-center justify-center w-full gap-8 p-8 my-6 bg-white rounded-lg drop-shadow-lg">
@@ -84,7 +89,9 @@ const Designer = (props: Props) => {
             });
           })}
         </div>
-        <div className={`${preview ? "block" : "hidden"} overflow-auto border shadow-xl`}>
+        <div
+          className={`${preview ? "block" : "hidden"} overflow-auto border shadow-xl rounded-xl`}
+        >
           <canvas height="448" width="448" ref={canvasRef}></canvas>
         </div>
       </div>

@@ -18,13 +18,17 @@ model User {
 }
 
 model Nft {
-  id          String  @id @default(uuid())
-  uri         String  @unique
-  metadataUri String  @unique
-  onSale      Boolean @default(false)
-  price       Int
-  owner       User    @relation("Owner", fields: [ownerId], references: [id])
-  ownerId     String
-  creator     User    @relation("Creator", fields: [creatorId], references: [id])
-  creatorId   String
+  id              String  @id @default(uuid())
+  uri             String  @unique
+  metadataUri     String  @unique
+  onSale          Boolean @default(false)
+  price           Int
+  owner           User    @relation("Owner", fields: [ownerId], references: [id])
+  ownerId         String
+  creator         User    @relation("Creator", fields: [creatorId], references: [id])
+  creatorId       String
+  name            String
+  description     String
+  tokenId         Int     @unique
+  contractAddress String
 }

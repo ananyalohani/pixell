@@ -1,10 +1,10 @@
+import "dotenv/config";
 import prisma from "@/lib/prisma";
-import dotenv from "dotenv";
 import FormData from "form-data";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
+import { Nft } from ".pnpm/@prisma+client@3.6.0_prisma@3.6.0/node_modules/.prisma/client";
 
-dotenv.config();
 const { PINATA_API_KEY, PINATA_API_SECRET } = process.env as Record<string, any>;
 
 interface PinataResponse {
@@ -53,6 +53,7 @@ async function uploadMetadataToPinata(
   const payload = {
     image: pinatify(ipfsHash),
     createdAt: new Date(),
+    contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
     ...metadata,
   };
   const response = await fetch(API_URL, {
@@ -77,37 +78,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { publicAddress: metadata.creatorAddress },
     });
     if (!user) {
-      res.status(401).json({ message: "Unauthorized." });
-      return;
+      return res.status(401).json({ error: "Unauthorized." });
     }
 
     // Upload the image to IPFS and get its hash
     const imageHash = await uploadImageToPinata(dataUrl);
     if (!imageHash) {
-      res.status(500).json({
-        message: "An internal server error occured",
+      return res.status(500).json({
+        error: "An internal server error occured",
       });
-      return;
     }
 
     // Upload the metadata to IPFS and get its hash
-    const metadataHash = await uploadMetadataToPinata(metadata, imageHash);
+    let metadataHash: string;
+    try {
+      metadataHash = await uploadMetadataToPinata(metadata, imageHash);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        error: "Failed to upload metadata",
+      });
+    }
+
+    // Create a long random number
+    const tokenId = Math.floor(Math.random() * Math.pow(2, 52));
 
     // Create an entry in the DB for this NFT
-    await prisma.nft.create({
-      data: {
-        uri: pinatify(imageHash),
-        metadataUri: pinatify(metadataHash),
-        onSale: true,
-        price,
-        ownerId: user.id,
-        creatorId: user.id,
-      },
-    });
-
-    res.json({
-      uri: pinatify(imageHash),
-      metadataUri: pinatify(metadataHash),
-    });
+    try {
+      const nft = await prisma.nft.create({
+        data: {
+          uri: pinatify(imageHash),
+          metadataUri: pinatify(metadataHash),
+          onSale: true,
+          price,
+          ownerId: user.id,
+          creatorId: user.id,
+          description: metadata.description,
+          name: metadata.name,
+          tokenId,
+          contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string,
+        },
+      });
+      return res.json({ data: nft });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        error: "Failed to create NFT entry in the database",
+      });
+    }
   }
 }

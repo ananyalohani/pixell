@@ -10,6 +10,11 @@
     "schema": "prisma/schema.prisma"
   },
   "dependencies": {
+    "@chakra-ui/spinner": "^1.2.1",
+    "@chakra-ui/system": "^1.8.3",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@ethersproject/contracts": "^5.5.0",
     "@ethersproject/units": "^5.5.0",
     "@heroicons/react": "^1.0.5",
     "@pinata/sdk": "^1.1.23",

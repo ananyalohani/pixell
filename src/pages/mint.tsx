@@ -28,7 +28,7 @@ export default function Mint({}: Props): ReactElement {
   const { renderCanvas } = useGridContext();
 
   const wethInterface = new utils.Interface(pixellContract.abi);
-  const wethContractAdress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+  const wethContractAdress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string;
   const contract = new Contract(wethContractAdress, wethInterface);
   const { state: mintState, send: mintNft } = useContractFunction(contract, "mintNFT");
   const { state: allowBuyState, send: allowBuy } = useContractFunction(contract, "allowBuy");

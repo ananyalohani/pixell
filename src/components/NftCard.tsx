@@ -16,7 +16,7 @@ const NftCard = ({ nft }: Props) => {
         <img src={nft.uri} className="border-b border-gray-200 rounded-t-lg" />
         <div className="w-full p-3 space-y-2">
           <div className="flex flex-row justify-between">
-            <h2 className="text-sm font-semibold">NFT Name</h2>
+            <h2 className="text-sm font-semibold">{nft.name}</h2>
             <div className="flex flex-row items-center space-x-0">
               <FaEthereum className="h-4 text-purple-500" />
               <p className="text-sm font-medium text-gray-700">{nft.price}</p>

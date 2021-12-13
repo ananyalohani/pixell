@@ -3,7 +3,7 @@ import NftCard from "@/components/NftCard";
 import { fetcher } from "@/lib/api";
 import { Nft, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import React, { useEffect } from "react";
+import React from "react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { NEXT_PUBLIC_BASE_URL } = process.env;
@@ -23,10 +23,6 @@ interface Props {
 }
 
 export default function Marketplace({ nfts }: Props) {
-  useEffect(() => {
-    console.log(nfts);
-  });
-
   return (
     <section>
       <Container className="py-10">

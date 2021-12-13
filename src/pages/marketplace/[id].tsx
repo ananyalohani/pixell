@@ -51,7 +51,13 @@ export default function NftPage({ nft }: Props): ReactElement {
             <div className="flex flex-row items-center space-x-2">
               <FaEthereum className="h-10 text-purple-500" />
               <p className="text-2xl font-bold">{nft.price}</p>
-              <p className="text-gray-500 ">($ {nft.usdPrice})</p>
+              <p className="text-gray-500 ">
+                (
+                {new Intl.NumberFormat("en-IN", { style: "currency", currency: "USD" }).format(
+                  nft.usdPrice
+                )}
+                )
+              </p>
             </div>
             <div className="flex flex-col space-y-1 text-sm text-gray-800">
               <h2 className="text-lg font-semibold">Description</h2>

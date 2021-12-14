@@ -1,12 +1,11 @@
 import Container from "@/components/Container";
 import NftCard from "@/components/NftCard";
 import { fetcher } from "@/lib/api";
+import { Table, Tbody, Td, Th, Tr, useToast } from "@chakra-ui/react";
+import { ClipboardCopyIcon } from "@heroicons/react/solid";
 import { Nft, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import React from "react";
-import { Table, Tbody, Td, Th, Tooltip, Tr, useToast } from "@chakra-ui/react";
-import Link from "next/link";
-import { ClipboardCopyIcon } from "@heroicons/react/solid";
 
 type NftWithUser = Nft & { creator: User };
 type NftData = {
@@ -109,7 +108,9 @@ export default function MyNfts({ userId, publicAddress, nfts, error }: Props) {
         <h1 className="text-2xl">Purchases</h1>
         <div className="grid grid-cols-4 gap-8 my-8">
           {nfts.bought.length > 0 ? (
-            nfts.bought.map((nft) => <NftCard nft={nft} key={nft.id} />)
+            nfts.bought.map((nft) => (
+              <NftCard nft={{ ...nft, onSale: true }} key={nft.id} />
+            ))
           ) : (
             <p>Nothing to show here.</p>
           )}

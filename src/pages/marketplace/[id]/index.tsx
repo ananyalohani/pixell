@@ -14,6 +14,7 @@ import { FaEthereum } from "react-icons/fa";
 
 type NftData = Nft & {
   creator: User;
+  owner: User;
   usdPrice: number;
 };
 
@@ -24,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     `${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`
   );
 
-  if (error || !data?.onSale) {
+  if (error) {
     return {
       notFound: true,
     };
@@ -71,7 +72,7 @@ export default function NftPage({ nft }: Props): ReactElement {
   return (
     <section>
       <Container className="py-16">
-        <div className="flex flex-row space-x-16">
+        <div className="flex flex-col space-y-16 lg:space-y-0 lg:space-x-16 lg:flex-row">
           <img
             src={nft.uri}
             className="self-start flex-1 max-w-md rounded-xl drop-shadow-lg"
@@ -80,6 +81,11 @@ export default function NftPage({ nft }: Props): ReactElement {
             <div className="space-y-4">
               <h1 className="text-3xl">{nft.name}</h1>
               <div className="flex flex-row items-center space-x-2">
+                {!nft.onSale && (
+                  <span className="px-3 text-lg font-bold text-red-400 border-2 border-red-200 rounded-md bg-red-50 py-1/2">
+                    SOLD
+                  </span>
+                )}
                 <FaEthereum className="h-10 text-purple-500" />
                 <p className="text-2xl font-bold">{nft.price}</p>
                 <p className="text-gray-500 ">
@@ -93,7 +99,7 @@ export default function NftPage({ nft }: Props): ReactElement {
               </div>
               <p className="text-sm italic text-gray-800">{nft.description}</p>
             </div>
-            <div className="flex flex-col space-y-4 text-sm text-gray-800">
+            <div className="flex flex-col space-y-4 overflow-auto text-sm text-gray-800">
               <h2 className="text-lg font-semibold">Details</h2>
               <Table size="sm" className="border-collapse">
                 <Tbody>
@@ -110,6 +116,25 @@ export default function NftPage({ nft }: Props): ReactElement {
                             href={`/address/${nft.creator.publicAddress}/nfts`}
                           >
                             {nft.creator.publicAddress}
+                          </Link>
+                        </code>
+                      </Tooltip>
+                      <CollectionIcon className="h-4 text-gray-400" />
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th className="py-4">Owner</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      <Tooltip
+                        label="View User's Collection"
+                        hasArrow
+                        fontSize="sm"
+                      >
+                        <code className="address">
+                          <Link
+                            href={`/address/${nft.owner.publicAddress}/nfts`}
+                          >
+                            {nft.owner.publicAddress}
                           </Link>
                         </code>
                       </Tooltip>
@@ -160,7 +185,9 @@ export default function NftPage({ nft }: Props): ReactElement {
                 </Tbody>
               </Table>
             </div>
-            {!owner ? (
+            {!nft.onSale ? (
+              <Button disabled>Sold</Button>
+            ) : !owner ? (
               <Spinner />
             ) : (
               owner!.id !== nft.ownerId && (

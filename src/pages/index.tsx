@@ -17,11 +17,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      nfts:
-        data
-          ?.filter((item: Nft) => item.onSale)
-          .reverse()
-          .slice(0, 5) || null,
+      nfts: data?.filter((item: Nft) => item.onSale).slice(0, 5) || null,
     },
   };
 };

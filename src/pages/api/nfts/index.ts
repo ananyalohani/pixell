@@ -10,9 +10,8 @@ export default async function handler(
     case "GET":
       try {
         const nfts = await prisma.nft.findMany({
-          include: {
-            creator: true,
-          },
+          include: { creator: true, owner: true },
+          orderBy: { createdAt: "desc" },
         });
         res.status(200).json({ data: nfts });
       } catch (err) {

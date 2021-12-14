@@ -28,8 +28,17 @@ const Header = () => {
     useDisclosure();
 
   useEffect(() => {
-    handleAuth(account);
-  }, [account]);
+    if (
+      account &&
+      ((chainId !== 3 && !unsupportedNetworkOpen) ||
+        (chainId === 3 && unsupportedNetworkOpen))
+    ) {
+      unsupportedNetworkToggle();
+      if (chainId === 3) {
+        handleAuth(account);
+      }
+    }
+  }, [account, chainId]);
 
   useEffect(() => {
     if (

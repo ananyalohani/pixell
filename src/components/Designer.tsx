@@ -64,7 +64,7 @@ const Designer = (props: Props) => {
       <div className="flex items-center justify-center">
         <div
           ref={gridRef}
-          className={`border-gray-300 bg-white w-80 h-80 sm:w-112 sm:h-112 ${
+          className={`border-2 border-gray-100 bg-white w-80 h-80 sm:w-112 sm:h-112 ${
             preview ? "hidden" : "grid"
           }`}
           style={{ gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))` }}

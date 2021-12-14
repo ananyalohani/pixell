@@ -11,6 +11,8 @@ export default async function handler(
       try {
         const user = await prisma.user.findUnique({
           select: {
+            id: true,
+            publicAddress: true,
             createdNFTs: {
               include: {
                 creator: true,

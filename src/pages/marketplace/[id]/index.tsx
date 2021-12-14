@@ -2,15 +2,15 @@ import Button from "@/components/Button";
 import Container from "@/components/Container";
 import { fetcher } from "@/lib/api";
 import { Table, Tbody, Td, Th, Tooltip, Tr, useToast } from "@chakra-ui/react";
-import { ClipboardCopyIcon, ExternalLinkIcon } from "@heroicons/react/solid";
+import { Spinner } from "@chakra-ui/spinner";
+import { CollectionIcon, ExternalLinkIcon } from "@heroicons/react/solid";
 import { Nft, User } from "@prisma/client";
+import { useEthers } from "@usedapp/core";
 import { GetServerSideProps } from "next";
-import React, { ReactElement, useEffect, useState } from "react";
-import { FaEthereum } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEthers } from "@usedapp/core";
-import { Spinner } from "@chakra-ui/spinner";
+import React, { ReactElement, useEffect, useState } from "react";
+import { FaEthereum } from "react-icons/fa";
 
 type NftData = Nft & {
   creator: User;
@@ -100,25 +100,20 @@ export default function NftPage({ nft }: Props): ReactElement {
                   <Tr>
                     <Th className="py-4">Creator</Th>
                     <Td className="flex flex-row items-center space-x-2">
-                      <code
-                        className="address"
-                        onClick={() => {
-                          window.navigator.clipboard.writeText(
-                            nft.creator.publicAddress
-                          );
-                          toast({
-                            title: "Address Copied!",
-                            description:
-                              "The public address of the creator was copied to clipboard.",
-                            status: "success",
-                            duration: 3000,
-                            isClosable: true,
-                          });
-                        }}
+                      <Tooltip
+                        label="View User's Collection"
+                        hasArrow
+                        fontSize="sm"
                       >
-                        {nft.creator.publicAddress}
-                      </code>
-                      <ClipboardCopyIcon className="h-4 text-gray-400" />
+                        <code className="address">
+                          <Link
+                            href={`/address/${nft.creator.publicAddress}/nfts`}
+                          >
+                            {nft.creator.publicAddress}
+                          </Link>
+                        </code>
+                      </Tooltip>
+                      <CollectionIcon className="h-4 text-gray-400" />
                     </Td>
                   </Tr>
                   <Tr>

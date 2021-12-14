@@ -52,7 +52,7 @@ export default function MyNfts({ nfts, error }: Props) {
         <h1 className="text-3xl">Creations</h1>
         <div className="grid grid-cols-4 gap-8 my-8">
           {nfts.created.length > 0 ? (
-            nfts.created.map((nft) => <NftCard nft={nft} />)
+            nfts.created.map((nft) => <NftCard nft={nft} key={nft.id} />)
           ) : (
             <p>Nothing to show here.</p>
           )}
@@ -62,7 +62,7 @@ export default function MyNfts({ nfts, error }: Props) {
         <h1 className="text-3xl">Purchases</h1>
         <div className="grid grid-cols-4 gap-8 my-8">
           {nfts.bought.length > 0 ? (
-            nfts.bought.map((nft) => <NftCard nft={nft} />)
+            nfts.bought.map((nft) => <NftCard nft={nft} key={nft.id} />)
           ) : (
             <p>Nothing to show here.</p>
           )}

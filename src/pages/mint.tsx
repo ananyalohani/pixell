@@ -2,10 +2,10 @@ import Button from "@/components/Button";
 import Container from "@/components/Container";
 import { useGridContext } from "@/context/GridContext";
 import { fetcher } from "@/lib/api";
-import { Spinner } from "@chakra-ui/spinner";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { Contract } from "@ethersproject/contracts";
 import { parseEther } from "@ethersproject/units";
-import { CheckCircleIcon } from "@heroicons/react/solid";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 import { Nft } from "@prisma/client";
 import { useContractFunction, useEthers } from "@usedapp/core";
 import { utils } from "ethers";
@@ -33,12 +33,14 @@ const MINT_STAGES = [
 
 export default function Mint({}: Props): ReactElement {
   const [mintStage, setMintStage] = useState<number>(-1);
+  const [errorStage, setErrorStage] = useState<number>();
   const [tokenId, setTokenId] = useState<number>(-1);
   const [nft, setNft] = useState<Nft>();
   const tokenRef = useRef<number>(tokenId);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { renderCanvas } = useGridContext();
   const { width, height } = useWindowSize();
+  const toast = useToast();
 
   const wethInterface = new utils.Interface(pixellContract.abi);
   const wethContractAdress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string;
@@ -82,7 +84,14 @@ export default function Mint({}: Props): ReactElement {
       ...values,
     });
     if (error || !nft) {
-      console.error(error);
+      setErrorStage(0);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: (error as any).message,
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
     setNft(nft);
@@ -107,7 +116,14 @@ export default function Mint({}: Props): ReactElement {
       });
       setMintStage(2);
     } catch (err) {
-      console.error(err);
+      setErrorStage(1);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: (err as any).message,
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
@@ -116,16 +132,34 @@ export default function Mint({}: Props): ReactElement {
       await allowBuy(tokenRef.current!, parseEther(values.price.toString()));
       setMintStage(3);
     } catch (err) {
-      console.error(err);
+      setErrorStage(2);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: (err as any).message,
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
     // Update database entry
-    await fetcher(`/api/nfts/${nft.id}`, "PATCH", {
-      onSale: true,
-      tokenId: tokenRef.current!,
-    });
-    setMintStage(4);
+    try {
+      await fetcher(`/api/nfts/${nft.id}`, "PATCH", {
+        onSale: true,
+        tokenId: tokenRef.current!,
+      });
+      setMintStage(4);
+    } catch (err) {
+      setErrorStage(3);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: (error as any).message,
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const DetailsForm: React.FC = () => (
@@ -199,6 +233,14 @@ export default function Mint({}: Props): ReactElement {
       </div>
       <div className="space-y-5">
         {MINT_STAGES.map((label, step) => {
+          if (errorStage === step) {
+            return (
+              <div key={step} className="flex items-center gap-2">
+                <XCircleIcon className="w-6 h-6 text-red-300" />
+                <span className="leading-relaxed text-red-700">{label}</span>
+              </div>
+            );
+          }
           if (mintStage > step) {
             return (
               <div key={step} className="flex items-center gap-2">

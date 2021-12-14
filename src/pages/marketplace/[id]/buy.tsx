@@ -1,26 +1,23 @@
+import Button from "@/components/Button";
 import Container from "@/components/Container";
-import { GetServerSideProps } from "next";
 import { fetcher } from "@/lib/api";
-import { Nft, User } from "@prisma/client";
-import { Spinner } from "@chakra-ui/spinner";
-import { CheckCircleIcon } from "@heroicons/react/solid";
-import { useGridContext } from "@/context/GridContext";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { Contract } from "@ethersproject/contracts";
-import { parseEther } from "@ethersproject/units";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
+import { Nft, User } from "@prisma/client";
 import {
   TransactionStatus,
   useContractFunction,
   useEthers,
 } from "@usedapp/core";
 import { utils } from "ethers";
-import { Formik } from "formik";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import pixellContract from "../../../../hardhat/artifacts/contracts/NFT.sol/PixellNFT.json";
-import Button from "@/components/Button";
-import { useRouter } from "next/router";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.params!;
@@ -28,6 +25,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data, error } = await fetcher(
     `${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`
   );
+
+  console.log(error);
 
   if (error || !data?.nft.onSale) {
     return {
@@ -67,10 +66,12 @@ const BUY_STAGES = [
 
 export default function BuyNft({ nft }: Props): ReactElement<Props> {
   const [buyStage, setBuyStage] = useState<number>(0);
+  const [errorStage, setErrorStage] = useState<number>();
   const buyStateRef = useRef<TransactionStatus>();
   const disallowBuyStateRef = useRef<TransactionStatus>();
   const { width, height } = useWindowSize();
   const { replace, query } = useRouter();
+  const toast = useToast();
 
   const wethInterface = new utils.Interface(pixellContract.abi);
   const wethContractAdress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string;
@@ -101,14 +102,22 @@ export default function BuyNft({ nft }: Props): ReactElement<Props> {
 
     // Getting account details
     try {
-      const { data, error } = await fetcher<User>(
+      const { data, error } = await fetcher(
         `/api/auth?publicAddress=${account}`
       );
       if (error || !data) throw new Error(error);
       user = data;
+      console.log({ user });
       setBuyStage(2);
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      setErrorStage(1);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: err.message,
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
@@ -119,8 +128,15 @@ export default function BuyNft({ nft }: Props): ReactElement<Props> {
       });
       if (buyStateRef.current!.status === "Success") setBuyStage(3);
       else throw new Error("Could not create buy transaction");
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      setErrorStage(2);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: err.message,
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
@@ -129,17 +145,36 @@ export default function BuyNft({ nft }: Props): ReactElement<Props> {
       await disallowBuy(nft.tokenId);
       if (disallowBuyStateRef.current!.status === "Success") setBuyStage(4);
       else throw new Error("Could not create disallow buy transaction");
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      setErrorStage(3);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: err.message,
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
     // Update database to reflect onSale: false
-    await fetcher(`/api/nfts/${nft.id}`, "PATCH", {
-      onSale: false,
-      ownerId: user!.id,
-    });
-    setBuyStage(5);
+    try {
+      await fetcher(`/api/nfts/${nft.id}`, "PATCH", {
+        onSale: false,
+        ownerId: user!.id,
+      });
+      setBuyStage(5);
+    } catch (err: any) {
+      setErrorStage(4);
+      toast({
+        status: "error",
+        title: "An error occured!",
+        description: err.message,
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
   };
 
   const Buying: React.FC = () => (
@@ -178,6 +213,14 @@ export default function BuyNft({ nft }: Props): ReactElement<Props> {
       </div>
       <div className="space-y-5">
         {BUY_STAGES.map((label, step) => {
+          if (errorStage === step) {
+            return (
+              <div key={step} className="flex items-center gap-2">
+                <XCircleIcon className="w-6 h-6 text-red-300" />
+                <span className="leading-relaxed text-red-700">{label}</span>
+              </div>
+            );
+          }
           if (buyStage > step) {
             return (
               <div key={step} className="flex items-center gap-2">

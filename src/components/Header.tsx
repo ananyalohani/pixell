@@ -33,8 +33,9 @@ const Header = () => {
 
   useEffect(() => {
     if (
-      (chainId !== 3 && !unsupportedNetworkOpen) ||
-      (chainId === 3 && unsupportedNetworkOpen)
+      account &&
+      ((chainId !== 3 && !unsupportedNetworkOpen) ||
+        (chainId === 3 && unsupportedNetworkOpen))
     )
       unsupportedNetworkToggle();
   }, [chainId]);
@@ -48,7 +49,6 @@ const Header = () => {
     try {
       activateBrowserWallet(undefined, true);
     } catch (err) {
-      console.error(err);
       metamaskMissingToggle();
     }
   };

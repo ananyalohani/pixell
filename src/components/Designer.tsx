@@ -90,7 +90,9 @@ const Designer = (props: Props) => {
           })}
         </div>
         <div
-          className={`${preview ? "block" : "hidden"} overflow-auto border shadow-xl rounded-xl`}
+          className={`${
+            preview ? "block" : "hidden"
+          } overflow-auto border shadow-xl rounded-xl`}
         >
           <canvas height="448" width="448" ref={canvasRef}></canvas>
         </div>
@@ -112,8 +114,10 @@ const Designer = (props: Props) => {
               <DownloadIcon className="w-6 h-6 text-white" />
               <p className="text-white">Download</p>
             </Button>
-            <Link href="/mint" passHref>
-              <Button className={`flex flex-row items-center justify-center space-x-2`}>
+            <Link href="/mint">
+              <Button
+                className={`flex flex-row items-center justify-center space-x-2`}
+              >
                 <CashIcon className="w-6 h-6 text-white" />
                 <p className="text-white">Mint NFT!</p>
               </Button>

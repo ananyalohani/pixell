@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import Container from "@/components/Container";
 import { fetcher } from "@/lib/api";
-import { Table, Td, Th, Tooltip, Tr, useToast } from "@chakra-ui/react";
+import { Table, Tbody, Td, Th, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import { ClipboardCopyIcon, ExternalLinkIcon } from "@heroicons/react/solid";
 import { Nft, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
@@ -93,71 +93,73 @@ export default function NftPage({ nft }: Props): ReactElement {
             <div className="flex flex-col space-y-4 text-sm text-gray-800">
               <h2 className="text-lg font-semibold">Details</h2>
               <Table size="sm" className="border-collapse">
-                <Tr>
-                  <Th className="py-4">Creator</Th>
-                  <Td className="flex flex-row items-center space-x-2">
-                    <code
-                      className="address"
-                      onClick={() => {
-                        window.navigator.clipboard.writeText(
-                          nft.creator.publicAddress
-                        );
-                        toast({
-                          title: "Address Copied!",
-                          description:
-                            "The public address of the creator was copied to clipboard.",
-                          status: "success",
-                          duration: 3000,
-                          isClosable: true,
-                        });
-                      }}
-                    >
-                      {nft.creator.publicAddress}
-                    </code>
-                    <ClipboardCopyIcon className="h-4 text-gray-400" />
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th>Contract Address</Th>
-                  <Td className="flex flex-row items-center space-x-2">
-                    <Tooltip label="View on Etherscan" hasArrow fontSize="sm">
-                      <code className="address">
-                        <a
-                          href={`https://ropsten.etherscan.io/address/${nft.contractAddress}`}
-                          target="_blank"
-                          rel="noopener"
-                        >
-                          {nft.contractAddress}
-                        </a>
+                <Tbody>
+                  <Tr>
+                    <Th className="py-4">Creator</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      <code
+                        className="address"
+                        onClick={() => {
+                          window.navigator.clipboard.writeText(
+                            nft.creator.publicAddress
+                          );
+                          toast({
+                            title: "Address Copied!",
+                            description:
+                              "The public address of the creator was copied to clipboard.",
+                            status: "success",
+                            duration: 3000,
+                            isClosable: true,
+                          });
+                        }}
+                      >
+                        {nft.creator.publicAddress}
                       </code>
-                    </Tooltip>
-                    <ExternalLinkIcon className="h-4 text-gray-400" />
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th>Token ID</Th>
-                  <Td className="flex flex-row items-center space-x-2">
-                    {nft.tokenId}
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th>Created At</Th>
-                  <Td className="flex flex-row items-center space-x-2">
-                    {new Date(nft.createdAt).toLocaleString("en-IN")}
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th>Token Standard</Th>
-                  <Td className="flex flex-row items-center space-x-2">
-                    ERC-721 URI Storage
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th>Network</Th>
-                  <Td className="flex flex-row items-center space-x-2">
-                    Ropsten
-                  </Td>
-                </Tr>
+                      <ClipboardCopyIcon className="h-4 text-gray-400" />
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th>Contract Address</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      <Tooltip label="View on Etherscan" hasArrow fontSize="sm">
+                        <code className="address">
+                          <a
+                            href={`https://ropsten.etherscan.io/address/${nft.contractAddress}`}
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            {nft.contractAddress}
+                          </a>
+                        </code>
+                      </Tooltip>
+                      <ExternalLinkIcon className="h-4 text-gray-400" />
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th>Token ID</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      {nft.tokenId}
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th>Created At</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      {new Date(nft.createdAt).toLocaleString("en-IN")}
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th>Token Standard</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      ERC-721 URI Storage
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th>Network</Th>
+                    <Td className="flex flex-row items-center space-x-2">
+                      Ropsten
+                    </Td>
+                  </Tr>
+                </Tbody>
               </Table>
             </div>
             {!owner ? (

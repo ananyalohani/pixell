@@ -11,7 +11,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      nfts: data?.nfts.filter((item: Nft) => item.onSale).reverse() || null,
+      nfts: data.nfts.filter((item: Nft) => item.onSale).reverse() || null,
     },
   };
 };
@@ -29,7 +29,7 @@ export default function Marketplace({ nfts }: Props) {
         <h1 className="text-3xl">MarketPlace</h1>
         <div className="grid grid-cols-4 gap-8 my-8">
           {nfts.map((nft) => (
-            <NftCard nft={nft} />
+            <NftCard nft={nft} key={nft.id} />
           ))}
         </div>
       </Container>

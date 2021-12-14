@@ -37,10 +37,10 @@ export default function Home({ nfts }: Props) {
           <h1 className="text-2xl">Latest Drops</h1>
           <div className="grid w-full grid-cols-5 gap-4">
             {nfts.map((nft) => (
-              <NftCard nft={nft} />
+              <NftCard nft={nft} key={nft.id} />
             ))}
           </div>
-          <Link passHref href="/marketplace">
+          <Link href="/marketplace">
             <Button className="self-end">Go to Marketplace</Button>
           </Link>
         </section>

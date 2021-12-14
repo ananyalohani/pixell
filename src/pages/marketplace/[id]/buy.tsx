@@ -19,16 +19,20 @@ import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import pixellContract from "../../../../hardhat/artifacts/contracts/NFT.sol/PixellNFT.json";
 
+type NftData = Nft & {
+  creator: User;
+  owner: User;
+  usdPrice: number;
+};
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.params!;
   const { NEXT_PUBLIC_BASE_URL } = process.env;
-  const { data, error } = await fetcher(
+  const { data, error } = await fetcher<NftData>(
     `${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`
   );
 
-  console.log(error);
-
-  if (error || !data?.nft.onSale) {
+  if (error || !data?.onSale) {
     return {
       notFound: true,
     };
@@ -39,21 +43,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum"
   );
   const jsonRes = (await res.json()) as any[];
-  data.nft.usdPrice = jsonRes[0].current_price * data.nft.price;
+  // @ts-ignore
+  data.usdPrice = jsonRes[0].current_price * data.price;
 
   return {
     props: {
-      nft: data.nft,
+      nft: data,
     },
   };
 };
 
 interface Props {
-  nft: Nft & {
-    creator: User;
-    owner: User;
-    usdPrice: number;
-  };
+  nft: NftData;
 }
 
 const BUY_STAGES = [

@@ -21,7 +21,7 @@ export default async function handler(
       });
       if (user) {
         res.status(200).json({
-          data: { user },
+          data: user,
         });
         return;
       }
@@ -31,7 +31,7 @@ export default async function handler(
         },
       });
       res.status(200).json({
-        data: { user: newUser },
+        data: newUser,
       });
       return;
 

@@ -6,23 +6,26 @@ import { GetServerSideProps } from "next";
 import React, { useEffect } from "react";
 
 type NftWithUser = Nft & { creator: User };
+type NftData = {
+  created: NftWithUser[];
+  bought: NftWithUser[];
+};
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { publicAddress } = ctx.params!;
   const { NEXT_PUBLIC_BASE_URL } = process.env;
-  const { data: user, error: userError } = await fetcher(
+  const { data: user, error: userError } = await fetcher<User>(
     `${NEXT_PUBLIC_BASE_URL}/api/auth?publicAddress=${publicAddress}`
   );
   const { data: nftData, error: nftError } = await fetcher(
-    `${NEXT_PUBLIC_BASE_URL}/api/user/${user.id}/nfts`
+    `${NEXT_PUBLIC_BASE_URL}/api/user/${user?.id}/nfts`
   );
 
   console.error(userError || nftError);
-  const { createdNFTs, ownedNFTs } = nftData.user;
+  const { createdNFTs, ownedNFTs } = nftData;
 
   const bought = ownedNFTs.filter(
-    (nft: NftWithUser) =>
-      !createdNFTs.find((createdNft: NftWithUser) => nft.id === createdNft.id)
+    (nft: NftWithUser) => nft.creatorId !== nft.ownerId
   );
 
   return {
@@ -34,10 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 interface Props {
-  nfts: {
-    created: NftWithUser[];
-    bought: NftWithUser[];
-  };
+  nfts: NftData;
   error?: string;
 }
 

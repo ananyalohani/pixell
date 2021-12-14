@@ -12,14 +12,19 @@ import { useRouter } from "next/router";
 import { useEthers } from "@usedapp/core";
 import { Spinner } from "@chakra-ui/spinner";
 
+type NftData = Nft & {
+  creator: User;
+  usdPrice: number;
+};
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.params!;
   const { NEXT_PUBLIC_BASE_URL } = process.env;
-  const { data, error } = await fetcher(
+  const { data, error } = await fetcher<NftData>(
     `${NEXT_PUBLIC_BASE_URL}/api/nfts/${id}`
   );
 
-  if (error || !data?.nft.onSale) {
+  if (error || !data?.onSale) {
     return {
       notFound: true,
     };
@@ -30,20 +35,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum"
   );
   const jsonRes = (await res.json()) as any[];
-  data.nft.usdPrice = jsonRes[0].current_price * data.nft.price;
+  // @ts-ignore
+  data.usdPrice = jsonRes[0].current_price * data.price;
 
   return {
     props: {
-      nft: data.nft,
+      nft: data,
     },
   };
 };
 
 interface Props {
-  nft: Nft & {
-    creator: User;
-    usdPrice: number;
-  };
+  nft: NftData;
 }
 
 export default function NftPage({ nft }: Props): ReactElement {

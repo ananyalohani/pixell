@@ -5,21 +5,23 @@ import { Nft, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import React from "react";
 
+type NftData = Nft & {
+  creator: User;
+};
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { NEXT_PUBLIC_BASE_URL } = process.env;
-  const { data } = await fetcher(`${NEXT_PUBLIC_BASE_URL}/api/nfts`);
+  const { data } = await fetcher<NftData[]>(`${NEXT_PUBLIC_BASE_URL}/api/nfts`);
 
   return {
     props: {
-      nfts: data.nfts.filter((item: Nft) => item.onSale).reverse() || null,
+      nfts: data?.filter((item: Nft) => item.onSale).reverse() || null,
     },
   };
 };
 
 interface Props {
-  nfts: (Nft & {
-    creator: User;
-  })[];
+  nfts: NftData[];
 }
 
 export default function Marketplace({ nfts }: Props) {

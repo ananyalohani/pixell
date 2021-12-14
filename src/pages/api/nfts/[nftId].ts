@@ -19,7 +19,7 @@ export default async function handler(
           },
         });
         if (!nft) res.status(404).json({ error: "Not Found" });
-        return res.status(200).json({ data: { nft } });
+        return res.status(200).json({ data: nft });
       } catch (err) {
         return res.status(500).json({ error: "Internal Server Error" });
       }

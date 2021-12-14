@@ -1,7 +1,10 @@
 import prisma from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   // get user by Id: /user/[userId]
   switch (req.method) {
     case "GET":
@@ -11,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             id: req.query.userId as string,
           },
         });
-        res.status(200).json({ data: { user } });
+        res.status(200).json({ data: user });
       } catch (err) {
         res.status(500).json({ error: "Internal Server Error" });
       }

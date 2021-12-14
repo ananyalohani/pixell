@@ -14,19 +14,25 @@ const NftCard = ({ nft }: Props) => {
     <Link href={`/marketplace/${nft.id}`} passHref>
       <div className="flex flex-col transition-all bg-white border border-gray-300 rounded-lg cursor-pointer hover:-translate-y-1 hover:drop-shadow group">
         <div className="overflow-hidden border-b border-gray-200 rounded-t-lg">
-          <img src={`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`} />
+          <img
+            src={`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`}
+          />
         </div>
-        <div className="w-full p-3 space-y-2">
-          <div className="flex flex-row justify-between">
-            <h2 className="text-sm font-semibold">{nft.name}</h2>
+        <div className="w-full p-3 space-y-1 md:space-y-2">
+          <div className="flex flex-col space-y-1 md:space-y-0 md:flex-row md:justify-between">
+            <h2 className="text-xs font-semibold md:text-sm">{nft.name}</h2>
             <div className="flex flex-row items-center space-x-0">
               <FaEthereum className="h-4 text-purple-500" />
-              <p className="text-sm font-medium text-gray-700">{nft.price}</p>
+              <p className="text-xs font-medium text-gray-700 md:text-sm">
+                {nft.price}
+              </p>
             </div>
           </div>
           <p className="text-xs truncate">
             Creator:{" "}
-            <code className="p-1 text-gray-700 bg-gray-200">{nft.creator.publicAddress}</code>
+            <code className="p-1 text-gray-700 bg-gray-200">
+              {nft.creator.publicAddress}
+            </code>
           </p>
         </div>
       </div>

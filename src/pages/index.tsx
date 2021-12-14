@@ -37,7 +37,7 @@ export default function Home({ nfts }: Props) {
       <Container className="py-10">
         <section className="flex flex-col space-y-8">
           <h1 className="text-2xl">Latest Drops</h1>
-          <div className="grid w-full grid-cols-5 gap-4">
+          <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-5">
             {nfts.map((nft) => (
               <NftCard nft={nft} key={nft.id} />
             ))}

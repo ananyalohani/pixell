@@ -29,7 +29,7 @@ export default function Marketplace({ nfts }: Props) {
     <section>
       <Container className="py-10">
         <h1 className="text-3xl">MarketPlace</h1>
-        <div className="grid grid-cols-4 gap-8 my-8">
+        <div className="grid grid-cols-2 gap-4 my-8 sm:grid-cols-4 sm:gap-8">
           {nfts.map((nft) => (
             <NftCard nft={nft} key={nft.id} />
           ))}

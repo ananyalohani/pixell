@@ -56,48 +56,50 @@ export default function MyNfts({ userId, publicAddress, nfts, error }: Props) {
     <section>
       <Container className="py-8">
         <h1 className="mb-6 text-2xl">User Details</h1>
-        <Table size="sm" className="border-collapse" width="container.sm">
-          <Tbody>
-            <Tr>
-              <Th className="py-4">Public Address</Th>
-              <Td className="flex flex-row items-center space-x-2">
-                <code
-                  className="address"
-                  onClick={() => {
-                    window.navigator.clipboard.writeText(publicAddress);
-                    toast({
-                      title: "Address Copied!",
-                      description:
-                        "The public address of the user was copied to clipboard.",
-                      status: "success",
-                      duration: 3000,
-                      isClosable: true,
-                    });
-                  }}
-                >
-                  {publicAddress}
-                </code>
-                <ClipboardCopyIcon className="h-4 text-gray-400" />
-              </Td>
-            </Tr>
-            <Tr>
-              <Th className="py-4">Total Creations</Th>
-              <Td className="flex flex-row items-center space-x-2">
-                {nfts.created.length}
-              </Td>
-            </Tr>
-            <Tr>
-              <Th className="py-4">Total Purchases</Th>
-              <Td className="flex flex-row items-center space-x-2">
-                {nfts.bought.length}
-              </Td>
-            </Tr>
-          </Tbody>
-        </Table>
+        <div className="overflow-scroll">
+          <Table size="sm" className="border-collapse" width={["container.sm"]}>
+            <Tbody>
+              <Tr>
+                <Th>Public Address</Th>
+                <Td className="flex flex-row items-center space-x-2">
+                  <code
+                    className="address"
+                    onClick={() => {
+                      window.navigator.clipboard.writeText(publicAddress);
+                      toast({
+                        title: "Address Copied!",
+                        description:
+                          "The public address of the user was copied to clipboard.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                      });
+                    }}
+                  >
+                    {publicAddress}
+                  </code>
+                  <ClipboardCopyIcon className="h-4 text-gray-400" />
+                </Td>
+              </Tr>
+              <Tr>
+                <Th>Total Creations</Th>
+                <Td className="flex flex-row items-center space-x-2">
+                  {nfts.created.length}
+                </Td>
+              </Tr>
+              <Tr>
+                <Th>Total Purchases</Th>
+                <Td className="flex flex-row items-center space-x-2">
+                  {nfts.bought.length}
+                </Td>
+              </Tr>
+            </Tbody>
+          </Table>
+        </div>
       </Container>
       <Container className="py-8">
         <h1 className="text-2xl">Creations</h1>
-        <div className="grid grid-cols-4 gap-8 mt-8">
+        <div className="grid grid-cols-2 gap-4 mt-8 sm:grid-cols-4 sm:gap-8">
           {nfts.created.length > 0 ? (
             nfts.created.map((nft) => <NftCard nft={nft} key={nft.id} />)
           ) : (
@@ -107,7 +109,7 @@ export default function MyNfts({ userId, publicAddress, nfts, error }: Props) {
       </Container>
       <Container className="py-8">
         <h1 className="text-2xl">Purchases</h1>
-        <div className="grid grid-cols-4 gap-8 my-8">
+        <div className="grid grid-cols-2 gap-4 my-8 sm:grid-cols-4 sm:gap-8">
           {nfts.bought.length > 0 ? (
             nfts.bought.map((nft) => <NftCard nft={nft} key={nft.id} />)
           ) : (

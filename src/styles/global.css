@@ -2,8 +2,9 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;1,100;1,200&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 
 .polka-grid {
-  --dot-color: rgba(255, 255, 255, 0.521) 7%, transparent 0;
-  background-image: radial-gradient(var(--dot-color)), radial-gradient(var(--dot-color));
+  --dot-color: rgba(255, 255, 255, 0.4) 4%, transparent 0;
+  background-image: radial-gradient(var(--dot-color)),
+    radial-gradient(var(--dot-color));
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
 }

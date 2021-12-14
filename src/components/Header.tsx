@@ -33,8 +33,9 @@ const Header = () => {
 
   useEffect(() => {
     if (
-      (chainId !== 3 && !unsupportedNetworkOpen) ||
-      (chainId === 3 && unsupportedNetworkOpen)
+      account &&
+      ((chainId !== 3 && !unsupportedNetworkOpen) ||
+        (chainId === 3 && unsupportedNetworkOpen))
     )
       unsupportedNetworkToggle();
   }, [chainId]);

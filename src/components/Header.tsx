@@ -28,23 +28,13 @@ const Header = () => {
     useDisclosure();
 
   useEffect(() => {
-    if (
-      account &&
-      ((chainId !== 3 && !unsupportedNetworkOpen) ||
-        (chainId === 3 && unsupportedNetworkOpen))
-    ) {
-      unsupportedNetworkToggle();
-      if (chainId === 3) {
-        handleAuth(account);
-      }
-    }
-  }, [account, chainId]);
+    if (account) handleAuth(account);
+  }, [account]);
 
   useEffect(() => {
     if (
-      account &&
-      ((chainId !== 3 && !unsupportedNetworkOpen) ||
-        (chainId === 3 && unsupportedNetworkOpen))
+      (chainId !== 3 && !unsupportedNetworkOpen) ||
+      (chainId === 3 && unsupportedNetworkOpen)
     )
       unsupportedNetworkToggle();
   }, [chainId]);

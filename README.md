@@ -2,6 +2,8 @@
 
 A pixel art NFT marketplace on the Ethereum blockchain. Create, mint, buy and sell NFTs on the Ropsten Testnet.
 
+![Pixell homepage](public/pixell.png)
+
 ## Technologies Used
 
 ![Tech Stack](public/tech-stack.png)

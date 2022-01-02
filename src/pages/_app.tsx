@@ -1,12 +1,12 @@
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { GridContextProvider } from "@/context/GridContext";
+import { ChakraProvider } from "@chakra-ui/react";
+import { DAppProvider } from "@usedapp/core";
+import type { AppProps } from "next/app";
+import Head from "next/head";
 import "../styles/global.css";
 import "../styles/tailwind.css";
-import type { AppProps } from "next/app";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { GridContextProvider } from "@/context/GridContext";
-import { DAppProvider } from "@usedapp/core";
-import { ChakraProvider } from "@chakra-ui/react";
-import Head from "next/head";
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (

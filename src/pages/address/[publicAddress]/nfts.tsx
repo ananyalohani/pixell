@@ -15,6 +15,16 @@ type NftData = {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { publicAddress } = ctx.params!;
+
+  if (!publicAddress || publicAddress === "undefined") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const { NEXT_PUBLIC_BASE_URL } = process.env;
   const { data: user, error: userError } = await fetcher<User>(
     `${NEXT_PUBLIC_BASE_URL}/api/auth?publicAddress=${publicAddress}`

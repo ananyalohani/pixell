@@ -187,9 +187,10 @@ export default function NftPage({ nft }: Props): ReactElement {
             </div>
             {!nft.onSale ? (
               <Button disabled>Sold</Button>
-            ) : !owner ? (
+            ) : account && !owner ? (
               <Spinner />
             ) : (
+              account &&
               owner!.id !== nft.ownerId && (
                 <Link href={`/marketplace/${query.id}/buy`}>
                   <Button>Buy</Button>

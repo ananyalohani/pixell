@@ -14,14 +14,10 @@ export default async function handler(
             id: true,
             publicAddress: true,
             createdNFTs: {
-              include: {
-                creator: true,
-              },
+              include: { creator: true },
             },
             ownedNFTs: {
-              include: {
-                creator: true,
-              },
+              include: { creator: true },
             },
           },
           where: {

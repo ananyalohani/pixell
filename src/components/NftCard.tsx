@@ -12,21 +12,30 @@ interface Props {
 const NftCard = ({ nft }: Props) => {
   return (
     <Link href={`/marketplace/${nft.id}`} passHref>
-      <div className="flex flex-col transition-all bg-white border border-gray-300 rounded-lg cursor-pointer hover:-translate-y-1 hover:drop-shadow group">
-        <div className="overflow-hidden border-b border-gray-200 rounded-t-lg">
+      <div className="flex flex-col transition-all bg-white border border-gray-300 rounded-lg cursor-pointer group hover:-translate-y-1 hover:drop-shadow">
+        <div className="relative overflow-hidden border-b border-gray-200 rounded-t-lg">
           <img
             src={`https://cloudflare-ipfs.com/ipfs/${nft.uri.split("/").pop()}`}
           />
-        </div>
-        <div className="w-full p-3 space-y-1 md:space-y-2">
-          <div className="flex flex-col space-y-1 md:space-y-0 md:flex-row md:justify-between">
-            <h2 className="text-xs font-semibold md:text-sm">{nft.name}</h2>
-            <div className="flex flex-row items-center space-x-0">
-              <FaEthereum className="h-4 text-purple-500" />
-              <p className="text-xs font-medium text-gray-700 md:text-sm">
-                {nft.price}
-              </p>
+          {!nft.onSale && (
+            <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full transition-opacity bg-white select-none bg-opacity-80 group-hover:opacity-0">
+              <div className="transform -rotate-12">
+                <span className="px-2 py-1 text-2xl font-black text-red-400 bg-red-100 border-8 border-red-300 rounded-lg">
+                  SOLD
+                </span>
+              </div>
             </div>
+          )}
+        </div>
+        <div className="w-full p-3 space-y-2">
+          <div className="flex flex-row justify-between">
+            <h2 className="text-sm font-semibold">{nft.name}</h2>
+            {nft.onSale && (
+              <div className="flex flex-row items-center space-x-0">
+                <FaEthereum className="h-4 text-purple-500" />
+                <p className="text-sm font-medium text-gray-700">{nft.price}</p>
+              </div>
+            )}
           </div>
           <p className="text-xs truncate">
             Creator:{" "}

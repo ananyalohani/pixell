@@ -27,7 +27,7 @@ interface NftDetails {
 const MINT_STAGES = [
   "Uploading your NFT and its metadata",
   "Adding the NFT to the blockchain",
-  "Enabling the token to be bought",
+  "Putting the token on the marketplace",
   "Updating token on database",
 ];
 

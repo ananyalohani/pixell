@@ -61,7 +61,7 @@ const BUY_STAGES = [
   "Confirming transaction",
   "Getting account details",
   "Buying the NFT",
-  "Disabling buying on the NFT",
+  "Taking the token off the marketplace",
   "Updating the database entry for the token",
 ];
 

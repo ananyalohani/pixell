@@ -104,7 +104,7 @@ export default function NftPage({ nft }: Props): ReactElement {
               <Table size="sm" className="border-collapse">
                 <Tbody>
                   <Tr>
-                    <Th className="py-4">Creator</Th>
+                    <Th>Creator</Th>
                     <Td className="flex flex-row items-center space-x-2">
                       <Tooltip
                         label="View User's Collection"
@@ -187,9 +187,10 @@ export default function NftPage({ nft }: Props): ReactElement {
             </div>
             {!nft.onSale ? (
               <Button disabled>Sold</Button>
-            ) : !owner ? (
+            ) : account && !owner ? (
               <Spinner />
             ) : (
+              account &&
               owner!.id !== nft.ownerId && (
                 <Link href={`/marketplace/${query.id}/buy`}>
                   <Button>Buy</Button>

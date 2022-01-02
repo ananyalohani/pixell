@@ -19,7 +19,6 @@ import {
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
-  const closeMobileMenu = () => setMobileMenu(false);
   const { activateBrowserWallet, account, chainId } = useEthers();
   const etherBalance = useEtherBalance(account);
   const { isOpen: metamaskMissingOpen, onToggle: metamaskMissingToggle } =
@@ -135,12 +134,16 @@ const Header = () => {
             <Link href="/marketplace">
               <a className="font-medium text-gray-800">Marketplace</a>
             </Link>
-            <Link href="/create">
-              <a className="font-medium text-gray-800">Create</a>
-            </Link>
-            <Link href={`/address/${account}/nfts`}>
-              <a className="font-medium text-gray-800">My NFTs</a>
-            </Link>
+            {account && chainId === 3 && (
+              <>
+                <Link href="/create">
+                  <a className="font-medium text-gray-800">Create</a>
+                </Link>
+                <Link href={`/address/${account}/nfts`}>
+                  <a className="font-medium text-gray-800">My NFTs</a>
+                </Link>
+              </>
+            )}
             {account ? (
               <div className="flex flex-row items-center space-x-2">
                 <img src="/ethereum.webp" className="w-auto h-8" />
@@ -183,21 +186,39 @@ const Header = () => {
         }`}
       >
         <Link href="/">
-          <a className="font-medium text-gray-800" onClick={closeMobileMenu}>
-            Home
-          </a>
+          <a className="font-medium text-gray-800">Home</a>
         </Link>
         <Link href="/marketplace">
-          <a className="font-medium text-gray-800" onClick={closeMobileMenu}>
-            Marketplace
-          </a>
+          <a className="font-medium text-gray-800">Marketplace</a>
         </Link>
         <Link href="/create">
-          <a className="font-medium text-gray-800" onClick={closeMobileMenu}>
-            Create
-          </a>
+          <a className="font-medium text-gray-800">Create</a>
         </Link>
-        <Button onClick={closeMobileMenu}>Connect Wallet</Button>
+        <Link href={`/address/${account}/nfts`}>
+          <a className="font-medium text-gray-800">My NFTs</a>
+        </Link>
+        {account ? (
+          <div className="flex flex-row items-center space-x-2">
+            <img src="/ethereum.webp" className="w-auto h-8" />
+            <div className="flex flex-col -space-y-1">
+              <p className="text-lg font-semibold text-purple-600">
+                {etherBalance &&
+                  parseFloat(formatEther(etherBalance)).toFixed(3) + " ETH"}
+              </p>
+              <p className="text-xs tracking-wider uppercase">
+                {ChainId[chainId!]}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <Button
+            onClick={handleConnectWallet}
+            className="flex flex-row items-center space-x-2"
+          >
+            <img src="/metamask.png" className="w-auto h-8" />
+            <p>Connect Wallet</p>
+          </Button>
+        )}
       </nav>
     </>
   );

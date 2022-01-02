@@ -45,21 +45,35 @@ const Designer = (props: Props) => {
 
   return (
     <div className="flex flex-row flex-wrap items-center justify-center w-full gap-8 p-8 my-6 bg-white rounded-lg drop-shadow-lg">
-      <div className="">
-        <div className="flex flex-row max-w-2xl space-x-8 h-112">
-          <SketchPicker
-            // @ts-ignore
-            width={350}
-            className={`${preview ? "pointer-events-none opacity-30" : ""}`}
-            disableAlpha={true}
-            color={pickedColor}
-            onChange={(color: any) => {
-              setPickedColor(color.hex);
-              colorCell(selectedCell[0], selectedCell[1], color.hex);
-              renderCanvas(canvasRef);
-            }}
-          />
-        </div>
+      <div className="max-w-2xl h-112">
+        <SketchPicker
+          // @ts-ignore
+          width={350}
+          className={`h-full hidden sm:block ${
+            preview ? "pointer-events-none opacity-30" : ""
+          }`}
+          disableAlpha={true}
+          color={pickedColor}
+          onChange={(color: any) => {
+            setPickedColor(color.hex);
+            colorCell(selectedCell[0], selectedCell[1], color.hex);
+            renderCanvas(canvasRef);
+          }}
+        />
+        <SketchPicker
+          // @ts-ignore
+          width={300}
+          className={`block sm:hidden ${
+            preview ? "pointer-events-none opacity-30" : ""
+          }`}
+          disableAlpha={true}
+          color={pickedColor}
+          onChange={(color: any) => {
+            setPickedColor(color.hex);
+            colorCell(selectedCell[0], selectedCell[1], color.hex);
+            renderCanvas(canvasRef);
+          }}
+        />
       </div>
       <div className="flex items-center justify-center">
         <div

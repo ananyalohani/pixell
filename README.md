@@ -1,29 +1,67 @@
-# Next.js + Tailwind CSS Example
+# Pixell
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v2.2)](https://blog.tailwindcss.com/tailwindcss-2-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+A pixel art NFT marketplace on the Ethereum blockchain. Create, mint, buy and sell NFTs on the Ropsten Testnet.
 
-It uses the new [`Just-in-Time Mode`](https://tailwindcss.com/docs/just-in-time-mode) for Tailwind CSS.
+## Technologies Used
 
-## Preview
+![Tech Stack](public/tech-stack.png)
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+## Getting Started
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
-
-## Deploy your own
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+Clone this repository and install [pnpm](https://pnpm.io).
 
 ```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
+  npm i -g pnpm
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+### Client
+
+Make a `.env` file in the root of the repository. Refer to [.env.example](.env.example) for the environment variables required for the project. You need to set up two things to run the client:
+
+1. **A postgreSQL database.** You could [set up a free one on Heroku](https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1). Set the value of `DATABASE_URL` as the url of the hosted database.
+
+2. **A free Pinata account.** [Pinata](https://www.pinata.cloud/) stores all the NFT images and metadata. Create an account, generate an API key and set the values of `PINATA_API_KEY` and `PINATA_API_SECRET` respectively.
+
+To run the development server:
+
+```bash
+  # install dependencies
+  pnpm install
+
+  # run the dev server
+  pnpm dev
+```
+
+### Smart Contract
+
+The `hardhat` directory contains all the code pertaining to the smart contracts. If you wish to play around with the smart contract code, refer to [NFT.sol](hardhat/contracts/NFT.sol). Before you compile and deploy the smart contract, make a `.env` file in the `hardhat` directory. You need to set up two things:
+
+1. **A free Alchemy account.** The project uses [Alchemy](https://www.alchemy.com/) to interact with the Ropsten network and deploy contracts. Create an account on Alchemy, create a new project on the Ropsten network and set the value of `ALCHEMY_API_URL` as the alchemy project url. If you're stuck at this part, refer to [this guide](https://ethereum.org/en/developers/tutorials/how-to-write-and-deploy-an-nft/#make-api-key).
+
+2. **A MetaMask account.** Your Ethereum account's private key is required to compile the contract using Hardhat. Set the value of `PRIVATE_KEY`.
+
+To compile and deploy the smart contracts:
+
+```bash
+  # install dependencies
+  pnpm install
+
+  # compile the contract
+  pnpm compile
+
+  # deploy the contract
+  pnpm deploy
+```
+
+The `pnpm deploy` command should log something like this on the console:
+
+```
+  Contract deployed to address: 0x1d2Cc2e0D387A04aD5111ee9Fd391110ddA0976F
+```
+
+Make sure to change `NEXT_PUBLIC_CONTRACT_ADDRESS` in [.env](.env) to the address of the newly deployed contract.
+
+## Authors
+
+- [Ananya Lohani](https://lohani.dev) | [GitHub](https://github.com/ananyalohani)
+- [Mihir Chaturvedi](https://mihir.ch) | [GitHub](https://github.com/plibither8)
